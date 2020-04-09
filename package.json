@@ -1,21 +1,24 @@
 {
-  "name": "educational-phaser-game-template",
+  "name": "shark_evolution",
   "version": "0.0.2",
-  "description": "Phaser 3 starter template for educational games, using TypeScript, webpack, and Github Pages.",
-  "homepage": "https://github.com/acbart/educational-phaser-game-template#readme",
+  "description": "Evolve and customize your shark, while learning simple method calls along the way!",
+  "homepage": "https://github.com/UD-CISC374/educational-game-design-document-team-7-michael-ly-steven-etgen#readme",
   "main": "index.js",
   "game": {
-    "url": "educational-phaser-game-template",
-    "shortName": "EdGame",
-    "name": "Educational Phaser Game Template"
+    "url": "shark-evolution",
+    "shortName": "SharkEvo",
+    "name": "Shark Evolution"
   },
-  "author": {
-    "name": "Austin Cory Bart",
-    "url": "https://github.com/acbart"
-  },
+  "constributors": [{
+    "name": "Steven Etgen",
+    "url": "https://github.com/setgen"
+  },{
+    "name": "Michael Ly",
+    "url": ""
+  }],
   "repository": {
     "type": "git",
-    "url": "https://github.com/acbart/educational-phaser-game-template.git"
+    "url": "https://github.com/UD-CISC374/educational-game-design-document-team-7-michael-ly-steven-etgen"
   },
   "scripts": {
     "start": "webpack-dev-server --config config/webpack.dev.js",
