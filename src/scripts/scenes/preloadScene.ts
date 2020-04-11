@@ -67,8 +67,8 @@ export default class PreloadScene extends Phaser.Scene {
     });this.anims.create({
       key: "pl_up",
       frames: this.anims.generateFrameNumbers("player", {
-        start: 0,
-        end: 2
+        start: 36,
+        end: 38
       }),
       frameRate: 10,
       repeat: -1,
@@ -76,8 +76,8 @@ export default class PreloadScene extends Phaser.Scene {
     this.anims.create({
       key: "pl_down",
       frames: this.anims.generateFrameNumbers("player", {
-        start: 36,
-        end: 38
+        start: 0,
+        end: 2
       }),
       frameRate: 10,
       repeat: -1,

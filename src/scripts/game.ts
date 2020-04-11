@@ -4,9 +4,13 @@ import PreloadScene from './scenes/preloadScene';
 import GameConfig = Phaser.Types.Core.GameConfig;
 export {config}
 export {gameSettings}
+export {BG_WIDTH}
+export {BG_HEIGHT}
 
 const DEFAULT_WIDTH: number = 1500;
 const DEFAULT_HEIGHT : number = 1500;
+const BG_WIDTH: number = 2820;
+const BG_HEIGHT : number = 2000;
 
 
 const config: GameConfig = {

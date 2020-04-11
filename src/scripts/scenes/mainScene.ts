@@ -1,5 +1,7 @@
 import {config} from '../game'
 import {gameSettings} from '../game'
+import {BG_WIDTH} from '../game'
+import {BG_HEIGHT} from '../game'
 import { Input } from 'phaser';
 import Beam from '../objects/beam'
 import Explosion from '../objects/explosions';
@@ -31,22 +33,29 @@ export default class MainScene extends Phaser.Scene {
   asteroid2: Phaser.GameObjects.Sprite;
   asteroid3: Phaser.GameObjects.Sprite;
   asteroid4: any;
+  bg_width: number;
+  bg_height: number;
 
     constructor() {
       super({ key: 'MainScene' });
       this.width = Number(config.scale?.width);
-      this.height = Number(config.scale?.height)
+      this.height = Number(config.scale?.height);
+      this.bg_width = BG_WIDTH;
+      this.bg_height = BG_HEIGHT;
       
     }
   
     create() {
   
-      this.background = this.add.tileSprite(0, 0, this.width, this.height, "background");
+      this.background = this.add.tileSprite(0, 0, 0, 0, "background");
       this.background.setOrigin(0, 0);
-      this.background.setScrollFactor(0);
+      this.background.setScrollFactor(1);
 
-      // this.mainCam = this.cameras.main.startFollow(this.player);
-      // this.background.tilePositionX = this.mainCam.scrollX * .3;
+      this.physics.world.setBounds(0, 0, this.bg_width-200, this.bg_height)
+      this.physics.world.setBoundsCollision();
+
+
+
 /*
       this.ship1 = this.add.sprite(this.width / 2 - 50, this.height / 2, "ship");
       this.ship2 = this.add.sprite(this.width / 2, this.height / 2, "ship2");
@@ -89,8 +98,7 @@ export default class MainScene extends Phaser.Scene {
       // });
   
       
-  
-      this.physics.world.setBoundsCollision();
+
   /*
       this.powerUps = this.physics.add.group();
   
@@ -114,9 +122,18 @@ export default class MainScene extends Phaser.Scene {
   
       }
 */
-      this.player = this.physics.add.sprite(this.width / 2 - 8, this.height - 64, "player");
+      this.player = this.physics.add.sprite(this.bg_width/2, this.bg_height/2, "player");
       this.cursorKeys = this.input.keyboard.createCursorKeys();
       this.player.setCollideWorldBounds(true);
+
+
+
+      this.mainCam = this.cameras.main.startFollow(this.player);
+      this.cameras.main.setDeadzone(this.width-this.player.width, this.height-this.player.height);
+      this.background.tilePositionX = this.mainCam.scrollX * .3;
+
+
+
 
       this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
       this.projectiles = this.add.group();
@@ -278,7 +295,27 @@ export default class MainScene extends Phaser.Scene {
     movePlayerManager(){
       this.player.setVelocity(0);
 
-      if(this.cursorKeys.left?.isDown){
+      if(this.cursorKeys.up?.isDown && this.cursorKeys.right?.isDown){
+        this.player.setVelocityY(-gameSettings.playerSpeed/1.2);
+        this.player.setVelocityX(gameSettings.playerSpeed/1.2)
+        this.player.play("pl_up", true);
+      }
+      else if(this.cursorKeys.up?.isDown && this.cursorKeys.left?.isDown){
+        this.player.setVelocityY(-gameSettings.playerSpeed/1.2);
+        this.player.setVelocityX(-gameSettings.playerSpeed/1.2)
+        this.player.play("pl_up", true);
+      }
+      else if(this.cursorKeys.down?.isDown && this.cursorKeys.left?.isDown){
+        this.player.setVelocityY(gameSettings.playerSpeed/1.2);
+        this.player.setVelocityX(-gameSettings.playerSpeed/1.2)
+        this.player.play("pl_down", true);
+      }
+      else if(this.cursorKeys.down?.isDown && this.cursorKeys.right?.isDown){
+        this.player.setVelocityY(gameSettings.playerSpeed/1.2);
+        this.player.setVelocityX(gameSettings.playerSpeed/1.2)
+        this.player.play("pl_down", true);
+      }
+      else if(this.cursorKeys.left?.isDown){
         this.player.setVelocityX(-gameSettings.playerSpeed);
         this.player.play("pl_left", true);
       }
@@ -287,14 +324,17 @@ export default class MainScene extends Phaser.Scene {
         this.player.play("pl_right", true);
       }
       
-      if(this.cursorKeys.up?.isDown){
+      else if(this.cursorKeys.up?.isDown){
         this.player.setVelocityY(-gameSettings.playerSpeed);
-        this.player.play("pl_down", true);
+        this.player.play("pl_up", true);
       }
       else if(this.cursorKeys.down?.isDown){
         this.player.setVelocityY(gameSettings.playerSpeed);
-        this.player.play("pl_up", true);
+        this.player.play("pl_down", true);
       }
+
+
+      
     }
   
     moveShip(ship, speed) {
