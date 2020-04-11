@@ -115,7 +115,6 @@ export default class MainScene extends Phaser.Scene {
       }
 */
       this.player = this.physics.add.sprite(this.width / 2 - 8, this.height - 64, "player");
-      this.player.play("thrust");
       this.cursorKeys = this.input.keyboard.createCursorKeys();
       this.player.setCollideWorldBounds(true);
 
@@ -281,16 +280,20 @@ export default class MainScene extends Phaser.Scene {
 
       if(this.cursorKeys.left?.isDown){
         this.player.setVelocityX(-gameSettings.playerSpeed);
+        this.player.play("pl_left", true);
       }
       else if(this.cursorKeys.right?.isDown){
         this.player.setVelocityX(gameSettings.playerSpeed);
+        this.player.play("pl_right", true);
       }
       
       if(this.cursorKeys.up?.isDown){
         this.player.setVelocityY(-gameSettings.playerSpeed);
+        this.player.play("pl_down", true);
       }
       else if(this.cursorKeys.down?.isDown){
         this.player.setVelocityY(gameSettings.playerSpeed);
+        this.player.play("pl_up", true);
       }
     }
   

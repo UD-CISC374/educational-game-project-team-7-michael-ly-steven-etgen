@@ -20,7 +20,7 @@ export default class PreloadScene extends Phaser.Scene {
     //load the spritesheet
     this.load.spritesheet("player", "./assets/spritesheets/shark_sprites.png",{
       frameWidth: 96,
-      frameHeight: 96
+      frameHeight: 96,
     });
     this.load.spritesheet("play1", "./assets/images/play1.png",{
       frameWidth: 733,
@@ -51,35 +51,35 @@ export default class PreloadScene extends Phaser.Scene {
     this.anims.create({
       key: "pl_right",
       frames: this.anims.generateFrameNumbers("player", {
-        start: 12,
-        end: 13
+        start: 24,
+        end: 26
       }),
-      frameRate: 20,
+      frameRate: 10,
       repeat: -1,
     });this.anims.create({
       key: "pl_left",
       frames: this.anims.generateFrameNumbers("player", {
-        start: 24,
-        end: 26
+        start: 12,
+        end: 14
       }),
-      frameRate: 20,
+      frameRate: 10,
       repeat: -1,
     });this.anims.create({
       key: "pl_up",
       frames: this.anims.generateFrameNumbers("player", {
-        start: 36,
-        end: 38
+        start: 0,
+        end: 2
       }),
-      frameRate: 20,
+      frameRate: 10,
       repeat: -1,
     });
     this.anims.create({
       key: "pl_down",
       frames: this.anims.generateFrameNumbers("player", {
-        start: 0,
-        end: 2
+        start: 36,
+        end: 38
       }),
-      frameRate: 20,
+      frameRate: 10,
       repeat: -1,
     });
 
