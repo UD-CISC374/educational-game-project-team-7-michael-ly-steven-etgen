@@ -47,7 +47,7 @@ export default class MainScene extends Phaser.Scene {
 
       // this.mainCam = this.cameras.main.startFollow(this.player);
       // this.background.tilePositionX = this.mainCam.scrollX * .3;
-
+/*
       this.ship1 = this.add.sprite(this.width / 2 - 50, this.height / 2, "ship");
       this.ship2 = this.add.sprite(this.width / 2, this.height / 2, "ship2");
       this.ship3 = this.add.sprite(this.width / 2 + 50, this.height / 2, "ship3");
@@ -82,7 +82,7 @@ export default class MainScene extends Phaser.Scene {
       this.asteroid4.setInteractive();
   
       this.input.on('gameobjectdown', this.destroyShip, this);
-  
+  */
       // this.add.text(20, 20, "Playing game", {
       //   font: "25px Arial",
       //   fill: "yellow"
@@ -91,7 +91,7 @@ export default class MainScene extends Phaser.Scene {
       
   
       this.physics.world.setBoundsCollision();
-  
+  /*
       this.powerUps = this.physics.add.group();
   
       var maxObjects = 4;
@@ -113,7 +113,7 @@ export default class MainScene extends Phaser.Scene {
         powerUp.setBounce(1);
   
       }
-
+*/
       this.player = this.physics.add.sprite(this.width / 2 - 8, this.height - 64, "player");
       this.player.play("thrust");
       this.cursorKeys = this.input.keyboard.createCursorKeys();
@@ -172,7 +172,7 @@ export default class MainScene extends Phaser.Scene {
     }
   
     update() {
-  
+  /*
       this.moveShip(this.ship1, 7);
       this.moveShip(this.ship2, 9);
       this.moveShip(this.ship3, 5);
@@ -180,8 +180,8 @@ export default class MainScene extends Phaser.Scene {
       this.moveAsteroid(this.asteroid2, 6);
       this.moveAsteroid(this.asteroid3, 8);
       this.moveAsteroid(this.asteroid4, 5);
-  
-      this.background.tilePositionY -= 0.5;
+  */
+      //this.background.tilePositionY -= 0.5;
 
       this.movePlayerManager();
 
@@ -339,18 +339,5 @@ export default class MainScene extends Phaser.Scene {
       gameObject.play("explode");
     }
   
-  
-  // }
-  // private exampleObject: ExampleObject;
 
-  // constructor() {
-  //   super({ key: 'MainScene' });
-  // }
-
-  // create() {
-  //   this.exampleObject = new ExampleObject(this, 0, 0);
-  // }
-
-  // update() {
-  // }
 }
