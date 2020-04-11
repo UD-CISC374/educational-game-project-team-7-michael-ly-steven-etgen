@@ -2,9 +2,11 @@ import 'phaser';
 import MainScene from './scenes/mainScene';
 import PreloadScene from './scenes/preloadScene';
 import GameConfig = Phaser.Types.Core.GameConfig;
+export {config}
+export {gameSettings}
 
-const DEFAULT_WIDTH = 400;
-const DEFAULT_HEIGHT = 400;
+const DEFAULT_WIDTH: number = 1500;
+const DEFAULT_HEIGHT : number = 1500;
 
 
 const config: GameConfig = {
@@ -21,10 +23,15 @@ const config: GameConfig = {
         default: 'arcade',
         arcade: {
             debug: false,
-            gravity: { y: 400 }
+            //gravity: { y: 400 }
+
         }
     }
 };
+
+const gameSettings = {
+    playerSpeed: 600,
+  }
 
 window.addEventListener('load', () => {
     window['game'] = new Phaser.Game(config);
