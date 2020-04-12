@@ -9,13 +9,16 @@
     "shortName": "SharkEvo",
     "name": "Shark Evolution"
   },
-  "constributors": [{
-    "name": "Steven Etgen",
-    "url": "https://github.com/setgen"
-  },{
-    "name": "Michael Ly",
-    "url": ""
-  }],
+  "constributors": [
+    {
+      "name": "Steven Etgen",
+      "url": "https://github.com/setgen"
+    },
+    {
+      "name": "Michael Ly",
+      "url": ""
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/UD-CISC374/educational-game-design-document-team-7-michael-ly-steven-etgen"

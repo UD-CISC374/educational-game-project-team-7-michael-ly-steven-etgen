@@ -35,6 +35,8 @@ export default class MainScene extends Phaser.Scene {
   // asteroid4: any;
   bg_width: number;
   bg_height: number;
+  fish1: Phaser.GameObjects.Sprite;
+  fish2: Phaser.GameObjects.Sprite;
 
     constructor() {
       super({ key: 'MainScene' });
@@ -136,6 +138,11 @@ export default class MainScene extends Phaser.Scene {
 
 
       this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
+      this.fish1 = this.physics.add.sprite(0, 400, "fish1");
+      this.fish1.play("fish1_anim");
+      this.fish2 = this.physics.add.sprite(0, 200, "fish2");
+      this.fish2.play("fish2_anim");
       /*
       this.projectiles = this.add.group();
 
@@ -189,6 +196,8 @@ export default class MainScene extends Phaser.Scene {
     update() {
 
       this.movePlayerManager();
+      this.movefish(this.fish1, 3);
+      this.movefish(this.fish2, 5);
   /*
       this.moveShip(this.ship1, 7);
       this.moveShip(this.ship2, 9);
@@ -383,6 +392,19 @@ export default class MainScene extends Phaser.Scene {
       ship.y = 0;
       var randomX = Phaser.Math.Between(0, this.width);
       ship.x = randomX;
+    }
+
+    movefish(fish, speed) {
+      fish.x += speed;
+      if (fish.x > this.width) {
+        this.resetFishPos(fish);
+      }
+    }
+
+    resetFishPos(fish) {
+      fish.x = 0;
+      var randomY = Phaser.Math.Between(0, this.width);
+      fish.y = randomY;
     }
   
 

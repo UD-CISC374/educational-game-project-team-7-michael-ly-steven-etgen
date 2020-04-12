@@ -34,6 +34,14 @@ export default class PreloadScene extends Phaser.Scene {
       frameWidth: 2820,
       frameHeight: 2000
     });
+    this.load.spritesheet("fish1", "./assets/spritesheets/fish1.png",{
+      frameWidth: 390,
+      frameHeight: 182
+    });
+    this.load.spritesheet("fish2", "./assets/spritesheets/fish2.png",{
+      frameWidth: 364,
+      frameHeight: 208
+    });
 
     this.load.bitmapFont("pixelFont", "./assets/font/font.png", "./assets/font/font.xml");
 
@@ -78,6 +86,26 @@ export default class PreloadScene extends Phaser.Scene {
       }),
       frameRate: 10,
       repeat: -1,
+    });
+
+    // Fish animations
+    this.anims.create({
+      key: "fish1_anim",
+      frames: this.anims.generateFrameNumbers("fish1", {
+        start: 0,
+        end: 7
+      }),
+      frameRate: 10,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "fish2_anim",
+      frames: this.anims.generateFrameNumbers("fish2", {
+        start: 0,
+        end: 7
+      }),
+      frameRate: 10,
+      repeat: -1
     });
 
     this.splash = this.add.tileSprite(this.width/2, this.height/2, 3000, 1500, "splash");
