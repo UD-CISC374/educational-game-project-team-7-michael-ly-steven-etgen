@@ -42,6 +42,26 @@ export default class PreloadScene extends Phaser.Scene {
       frameWidth: 364,
       frameHeight: 208
     });
+    this.load.spritesheet("large_fish", "./assets/spritesheets/fish_spritesheet_1.png",{
+      frameWidth: 48,
+      frameHeight: 48
+    });
+    this.load.spritesheet("med_fish", "./assets/spritesheets/fish_spritesheet_2.png",{
+      frameWidth: 48,
+      frameHeight: 48
+    });
+    this.load.spritesheet("small_fish", "./assets/spritesheets/fish_spritesheet_3.png",{
+      frameWidth: 32,
+      frameHeight: 32
+    });
+    this.load.spritesheet("roundfish", "./assets/spritesheets/fish_spritesheet_4.png",{
+      frameWidth: 48,
+      frameHeight: 48
+    });
+    this.load.spritesheet("sunfish", "./assets/spritesheets/fish_spritesheet_5.png",{
+      frameWidth: 52,
+      frameHeight: 96
+    });
 
     this.load.bitmapFont("pixelFont", "./assets/font/font.png", "./assets/font/font.xml");
 
@@ -103,6 +123,60 @@ export default class PreloadScene extends Phaser.Scene {
       frames: this.anims.generateFrameNumbers("fish2", {
         start: 0,
         end: 7
+      }),
+      frameRate: 10,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "sunfish_1_left",
+      frames: this.anims.generateFrameNumbers("sunfish", {
+        start: 12,
+        end: 14
+      }),
+      frameRate: 10,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "sunfish_1_right",
+      frames: this.anims.generateFrameNumbers("sunfish", {
+        start: 24,
+        end: 26
+      }),
+      frameRate: 10,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "roundfish_2_left",
+      frames: this.anims.generateFrameNumbers("roundfish", {
+        start: 15,
+        end: 17
+      }),
+      frameRate: 10,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "roundfish_2_right",
+      frames: this.anims.generateFrameNumbers("roundfish", {
+        start: 27,
+        end: 29
+      }),
+      frameRate: 10,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "large_fish_2_left",
+      frames: this.anims.generateFrameNumbers("large_fish", {
+        start: 19,
+        end: 17
+      }),
+      frameRate: 10,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "large_fish_2_right",
+      frames: this.anims.generateFrameNumbers("large_fish", {
+        start: 27,
+        end: 29
       }),
       frameRate: 10,
       repeat: -1

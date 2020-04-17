@@ -37,6 +37,8 @@ export default class MainScene extends Phaser.Scene {
   bg_height: number;
   fish1: Phaser.GameObjects.Sprite;
   fish2: Phaser.GameObjects.Sprite;
+  fish3: Phaser.GameObjects.Sprite;
+  fish: Phaser.Physics.Arcade.Group;
 
     constructor() {
       super({ key: 'MainScene' });
@@ -58,6 +60,8 @@ export default class MainScene extends Phaser.Scene {
 
 
 
+
+
 /*
       this.ship1 = this.add.sprite(this.width / 2 - 50, this.height / 2, "ship");
       this.ship2 = this.add.sprite(this.width / 2, this.height / 2, "ship2");
@@ -75,14 +79,7 @@ export default class MainScene extends Phaser.Scene {
       this.asteroid3 = this.add.sprite(this.width / 2 + 50, this.height / 2 + 50, "asteroid");
       this.asteroid4 = this.add.sprite(this.width / 2 + 50, this.height / 2 + 50, "asteroid");
 
-      this.enemies =this.physics.add.group();
-      this.enemies.add(this.ship1);
-      this.enemies.add(this.ship2);
-      this.enemies.add(this.ship3);
-      this.enemies.add(this.asteroid1);
-      this.enemies.add(this.asteroid2);
-      this.enemies.add(this.asteroid3);
-      this.enemies.add(this.asteroid4);
+
   
       this.ship1.setInteractive();
       this.ship2.setInteractive();
@@ -127,6 +124,7 @@ export default class MainScene extends Phaser.Scene {
       this.player = this.physics.add.sprite(this.bg_width/2, this.bg_height/2, "player");
       this.cursorKeys = this.input.keyboard.createCursorKeys();
       this.player.setCollideWorldBounds(true);
+      this.player.setScale(2,2);
 
 
 
@@ -139,10 +137,25 @@ export default class MainScene extends Phaser.Scene {
 
       this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
-      this.fish1 = this.physics.add.sprite(0, 400, "fish1");
-      this.fish1.play("fish1_anim");
-      this.fish2 = this.physics.add.sprite(0, 200, "fish2");
-      this.fish2.play("fish2_anim");
+      this.fish1 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_width), "sunfish");
+      this.fish1.play("sunfish_1_right");
+      this.fish1.setScale(3.5,3.5);
+
+      this.fish2 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_width), "roundfish");
+      this.fish2.setScale(1.5,1.5);
+      this.fish2.play("roundfish_2_right");
+
+      this.fish3 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_width), "large_fish");
+      this.fish3.setScale(2,2);
+      this.fish3.play("large_fish_2_right");
+
+
+      this.fish = this.physics.add.group();
+      this.fish.add(this.fish1);
+      this.fish.add(this.fish2);
+      this.fish.add(this.fish3);
+      
+
       /*
       this.projectiles = this.add.group();
 
@@ -151,7 +164,7 @@ export default class MainScene extends Phaser.Scene {
       });
 */
       this.physics.add.overlap(this.player, this.powerUps, this.pickPowerUp, undefined, this);
-      //this.physics.add.overlap(this.player, this.enemies, this.hurtPlayer, undefined, this);
+      this.physics.add.overlap(this.player, this.fish, this.checkPlayerBigger, undefined, this);
       //this.physics.add.overlap(this.projectiles, this.enemies, this.hitEnemy, undefined, this);
 
       var graphics = this.add.graphics();
@@ -192,12 +205,32 @@ export default class MainScene extends Phaser.Scene {
       //this.music.play(musicConfig);
 
     }
+
+
+    checkPlayerBigger(player, fish) {
+      const fish_rec = this.getArea(fish.getBounds());
+      const player_rec = this.getArea(player.getBounds());
+      if(player_rec > fish_rec){
+        return true;
+      }
+      else{
+        return false;
+      }
+    }
+
+
+    getArea(rec:Phaser.Geom.Rectangle){
+      const h = rec.height;
+      const w = rec.width;
+      return (h*w);
+    }
   
     update() {
 
       this.movePlayerManager();
-      this.movefish(this.fish1, 3);
-      this.movefish(this.fish2, 5);
+      this.movefish(this.fish1, 2);
+      this.movefish(this.fish2, 6);
+      this.movefish(this.fish3, 3);
   /*
       this.moveShip(this.ship1, 7);
       this.moveShip(this.ship2, 9);
@@ -275,16 +308,17 @@ export default class MainScene extends Phaser.Scene {
       this.player.alpha = 1;
     }
 
+*/
+/*
     hitEnemy(projectile, enemy){
-      var explosion = new Explosion(this, enemy.x, enemy.y);
       
-      this.explosionSound.play();
+      //this.collectSound.play();
 
       projectile.destroy();
       this.resetEnemyPos(enemy);
       this.score += 15;
 
-      var scoreFormated = this.zeroPad(this.score, 6);
+      //var scoreFormated = this.zeroPad(this.score, 6);
       this.scoreLabel.text = "SCORE " + scoreFormated;
     }
 */
@@ -347,12 +381,7 @@ export default class MainScene extends Phaser.Scene {
       
     }
   
-    moveShip(ship, speed) {
-      ship.y += speed;
-      if (ship.y > this.height) {
-        this.resetShipPos(ship);
-      }
-    }
+
 /*
     resetEnemyPos(enemy){
       if(enemy == this.ship1 || enemy == this.ship2 || enemy == this.ship3){
@@ -388,22 +417,18 @@ export default class MainScene extends Phaser.Scene {
       gameObject.play("explode");
     }
 
-    resetShipPos(ship) {
-      ship.y = 0;
-      var randomX = Phaser.Math.Between(0, this.width);
-      ship.x = randomX;
-    }
-
     movefish(fish, speed) {
       fish.x += speed;
-      if (fish.x > this.width) {
+      if (fish.x > this.bg_width) {
         this.resetFishPos(fish);
       }
     }
 
     resetFishPos(fish) {
+      var rand = Phaser.Math.Between(0, 1); //TODO: for going left or right
+      var randomY = Phaser.Math.Between(0, this.bg_width);
       fish.x = 0;
-      var randomY = Phaser.Math.Between(0, this.width);
+
       fish.y = randomY;
     }
   

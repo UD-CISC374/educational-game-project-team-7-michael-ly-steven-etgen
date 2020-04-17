@@ -5,6 +5,7 @@ export default class Beam extends Phaser.GameObjects.Sprite{
     body: Phaser.Physics.Arcade.Body
 
     constructor(scene:MainScene​​){
+       
         var x = scene.player.x;
         var y = scene.player.y - 16;
         super(scene, x, y, "beam");
