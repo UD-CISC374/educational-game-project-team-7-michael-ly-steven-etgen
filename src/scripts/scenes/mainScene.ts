@@ -133,21 +133,26 @@ export default class MainScene extends Phaser.Scene {
       this.background.tilePositionX = this.mainCam.scrollX * .3;
 
 
-
-
       this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
-      this.fish1 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_width), "sunfish");
+      //this.fish1 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_height), "sunfish");
+      this.fish1 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_height), "sunfish");
       this.fish1.play("sunfish_1_right");
       this.fish1.setScale(3.5,3.5);
 
-      this.fish2 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_width), "roundfish");
-      this.fish2.setScale(1.5,1.5);
-      this.fish2.play("roundfish_2_right");
+      //TODO: testing for collision accuracy fix
+          // this.fish1.input.hitArea = new Phaser.Geom.Circle(9);
+          // this.fish1.setDisplaySize(182, 336);
 
-      this.fish3 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_width), "large_fish");
-      this.fish3.setScale(2,2);
+      this.fish2 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_height), "roundfish");
+      this.fish2.play("roundfish_2_right");
+      this.fish2.setScale(1.5,1.5);
+      //this.fish2.setSize(32,32);
+
+      this.fish3 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_height), "large_fish");
       this.fish3.play("large_fish_2_right");
+      this.fish3.setScale(2,2);
+      //this.fish3.setSize(24,24);
 
 
       this.fish = this.physics.add.group();
@@ -180,12 +185,10 @@ export default class MainScene extends Phaser.Scene {
 
       this.score = 0;
 
-      //new text using bitmap font
-      this.scoreLabel = this.add.bitmapText(10, 5, "pixelFont", "SCORE ", 50);
 
       //format the score
-      var scoreFormated = this.zeroPad(this.score, 6);
-      this.scoreLabel = this.add.bitmapText(10, 5, "pixelFont", "SCORE " + scoreFormated , 50);
+      var scoreFormated = this.zeroPad(this.score, 2);
+      this.scoreLabel = this.add.bitmapText(this.mainCam.scrollX+10, this.mainCam.scrollY+5, "pixelFont", "SCORE " + scoreFormated , 50);
 
       this.pickupSound = this.sound.add("audio_pickup");
 
@@ -206,31 +209,18 @@ export default class MainScene extends Phaser.Scene {
 
     }
 
-
-    checkPlayerBigger(player, fish) {
-      const fish_rec = this.getArea(fish.getBounds());
-      const player_rec = this.getArea(player.getBounds());
-      if(player_rec > fish_rec){
-        return true;
-      }
-      else{
-        return false;
-      }
-    }
-
-
-    getArea(rec:Phaser.Geom.Rectangle){
-      const h = rec.height;
-      const w = rec.width;
-      return (h*w);
-    }
   
     update() {
-
+      
       this.movePlayerManager();
       this.movefish(this.fish1, 2);
       this.movefish(this.fish2, 6);
       this.movefish(this.fish3, 3);
+
+      this.scoreLabel.destroy();
+      var scoreFormated = this.zeroPad(this.score, 2);
+      this.scoreLabel = this.add.bitmapText(this.mainCam.scrollX+15, this.mainCam.scrollY+10, "pixelFont", "SCORE " + scoreFormated , 50);
+
   /*
       this.moveShip(this.ship1, 7);
       this.moveShip(this.ship2, 9);
@@ -426,10 +416,68 @@ export default class MainScene extends Phaser.Scene {
 
     resetFishPos(fish) {
       var rand = Phaser.Math.Between(0, 1); //TODO: for going left or right
-      var randomY = Phaser.Math.Between(0, this.bg_width);
+      var randomY = Phaser.Math.Between(0, this.bg_height);
       fish.x = 0;
 
       fish.y = randomY;
+    }
+
+    checkPlayerBigger(player, fish) {     //checks if the player is bigger than the fish it collided with
+      const fish_rec = this.getArea(fish.getBounds());
+      const player_rec = this.getArea(player.getBounds());
+      if(player_rec > fish_rec){
+        this.resetFishPos(fish);
+        this.score += 1;
+        var scoreFormated = this.zeroPad(this.score, 2);
+        this.scoreLabel.text = "SCORE " + scoreFormated;
+        return true;
+      }
+      else if(this.player.alpha < 1){
+        return false;
+      }
+      else{
+        this.resetPlayer();
+        return false;
+      }
+    }
+
+    getArea(rec:Phaser.Geom.Rectangle){     //returns the area of a phaser rectangle
+      const h = rec.height;
+      const w = rec.width;
+      return (h*w);
+    }
+
+    resetPlayer(){
+      var x = this.bg_width/2;
+      var y = this.bg_height/5;
+
+      this.player.enableBody(true, x, y, true, true);
+      this.mainCam.centerOn(this.bg_width/2, this.bg_height/2)
+
+      //take 30 points from the player
+      if(this.score <= 0){
+        this.score -= 1;
+        var scoreFormated = this.zeroPad(this.score, 2);
+        this.scoreLabel.text = "SCORE " + scoreFormated;
+      }
+  
+      //make the player transparent to indicate invulnerability
+      this.player.alpha = 0.5;
+
+      //move the ship from outside the screen to its original position
+      var tween = this.tweens.add({
+        targets: this.player,
+        y: this.height - 64,
+        ease: 'Power1',
+        duration: 1500,
+        repeat:0,
+        onComplete: this.onTweenComplete,
+        callbackScope: this
+      });
+    }
+  
+    onTweenComplete(){
+      this.player.alpha = 1;
     }
   
 
