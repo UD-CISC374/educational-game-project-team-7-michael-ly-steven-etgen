@@ -132,7 +132,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/educational-game-project-team-7-michael-ly-steven-etgen/alphaindex.html"
   },
   {
-    "revision": "4e5302c74223c4a425346430e90c63d7",
+    "revision": "c09c7a564b676a4b9ae7b93f4c4a8756",
     "url": "/educational-game-project-team-7-michael-ly-steven-etgen/alphamanifest.json"
   },
   {
