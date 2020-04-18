@@ -2,7 +2,7 @@ import {config} from '../game'
 import {gameSettings} from '../game'
 import {BG_WIDTH} from '../game'
 import {BG_HEIGHT} from '../game'
-import { Input } from 'phaser';
+import { Input, Physics } from 'phaser';
 import Beam from '../objects/beam'
 import Explosion from '../objects/explosions';
 
@@ -27,6 +27,8 @@ export default class MainScene extends Phaser.Scene {
   fish1: Phaser.GameObjects.Sprite;
   fish2: Phaser.GameObjects.Sprite;
   fish3: Phaser.GameObjects.Sprite;
+  fish4: Phaser.GameObjects.Sprite;
+  fish5: Phaser.GameObjects.Sprite;
   fish: Phaser.Physics.Arcade.Group;
   inputElement: Phaser.GameObjects.DOMElement
   dir_msg: Phaser.GameObjects.Text;
@@ -71,7 +73,7 @@ export default class MainScene extends Phaser.Scene {
           // this.fish1.setDisplaySize(182, 336);
 
       this.fish2 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_height), "roundfish");
-      this.fish2.play("roundfish_2_right");
+      //this.fish2.play("roundfish_2_right");
       this.fish2.setScale(1.5,1.5);
       this.fish2.setInteractive();
       //this.fish2.setSize(32,32);
@@ -82,11 +84,21 @@ export default class MainScene extends Phaser.Scene {
       this.fish3.setScale(2,2);
       //this.fish3.setSize(24,24);
 
+      this.fish4 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_height), "roundfish");
+      //this.fish4.play("roundfish_2_left");
+      this.fish4.setScale(1.5,1.5);
+
+      this.fish5 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_height), "large_fish");
+      //this.fish5.play("large_fish_2_left");
+      this.fish5.setScale(2,2);
+
 
       this.fish = this.physics.add.group();
       this.fish.add(this.fish1);
       this.fish.add(this.fish2);
       this.fish.add(this.fish3);
+      this.fish.add(this.fish4);
+      this.fish.add(this.fish5);
       
 
   /*
@@ -139,9 +151,59 @@ export default class MainScene extends Phaser.Scene {
     update() {
       
       this.movePlayerManager();
-      this.movefish(this.fish1, 2);
-      this.movefish(this.fish2, 6);
-      this.movefish(this.fish3, 3);
+      this.movefishRight(this.fish1, 2);
+      //this.movefishRight(this.fish2, 6);
+      //this.movefishRight(this.fish3, 3);
+      //this.movefishLeft(this.fish4, 6);
+      //this.movefishLeft(this.fish5, 3);
+      
+      if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish2.x, this.fish2.y) < 400) { // Attempting to change direction of the fish when it's close to the player
+        if (this.player.x < this.fish2.x) { // fish moves right if the player is behind it
+          this.movefish2Right();
+        }
+        else if (this.player.x > this.fish2.x) { // fish moves left if the player is ahead
+          this.movefish2Left();
+        }
+      }
+      else {
+        this.movefish2Right();
+      }
+
+      if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish3.x, this.fish3.y) < 400) { 
+        if (this.player.x < this.fish3.x) { 
+          this.movefish3Right();
+        }
+        else if (this.player.x > this.fish3.x) { 
+          this.movefish3Left();
+        }
+      }
+      else {
+        this.movefish3Right();
+      }
+
+      if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish4.x, this.fish4.y) < 400) { 
+        if (this.player.x < this.fish4.x) { 
+          this.movefish4Right();
+        }
+        else if (this.player.x > this.fish4.x) { 
+          this.movefish4Left();
+        }
+      }
+      else {
+        this.movefish4Left();
+      }
+
+      if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish5.x, this.fish5.y) < 400) { 
+        if (this.player.x < this.fish5.x) { 
+          this.movefish5Right();
+        }
+        else if (this.player.x > this.fish5.x) { 
+          this.movefish5Left();
+        }
+      }
+      else {
+        this.movefish5Left();
+      }
 
       this.scoreLabel.destroy();
       var scoreFormated = this.zeroPad(this.score, 2);
@@ -209,26 +271,79 @@ export default class MainScene extends Phaser.Scene {
       gameObject.play("explode");
     }
 
-    movefish(fish, speed) {
+    movefish2Right() {
+      this.fish2.play("roundfish_2_right", true);
+      this.movefishRight(this.fish2, 6);  
+    }
+
+    movefish2Left() {
+      this.fish2.play("roundfish_2_left", true);
+      this.movefishLeft(this.fish2, 6);
+    }
+
+    movefish3Right() {
+      this.fish3.play("large_fish_2_right", true);
+      this.movefishRight(this.fish3, 3);  
+    }
+
+    movefish3Left() {
+      this.fish3.play("large_fish_2_left", true);
+      this.movefishLeft(this.fish3, 3);
+    }
+
+    movefish4Right() {
+      this.fish4.play("roundfish_2_right", true);
+      this.movefishRight(this.fish4, 6);  
+    }
+
+    movefish4Left() {
+      this.fish4.play("roundfish_2_left", true);
+      this.movefishLeft(this.fish4, 6);
+    }
+
+    movefish5Right() {
+      this.fish5.play("large_fish_2_right", true);
+      this.movefishRight(this.fish5, 3);  
+    }
+
+    movefish5Left() {
+      this.fish5.play("large_fish_2_left", true);
+      this.movefishLeft(this.fish5, 3);
+    }
+
+    movefishRight(fish, speed) {
       fish.x += speed;
       if (fish.x > this.bg_width) {
-        this.resetFishPos(fish);
+        this.resetFishPosLeft(fish);
       }
     }
 
-    resetFishPos(fish) {
+    movefishLeft(fish, speed) {
+      fish.x -= speed;
+      if (fish.x < 0) {
+        this.resetFishPosRight(fish);
+      }
+    }
+
+    resetFishPosRight(fish) {
+      var randomY = Phaser.Math.Between(0, this.bg_height);
+      fish.x = this.bg_width;
+      fish.y = randomY;
+    }
+
+    resetFishPosLeft(fish) {
       var rand = Phaser.Math.Between(0, 1); //TODO: for going left or right
       var randomY = Phaser.Math.Between(0, this.bg_height);
       fish.x = 0;
-
       fish.y = randomY;
     }
+
 
     checkPlayerBigger(player, fish) {     //checks if the player is bigger than the fish it collided with
       const fish_rec = this.getArea(fish.getBounds());
       const player_rec = this.getArea(player.getBounds());
       if(player_rec > fish_rec){
-        this.resetFishPos(fish);
+        this.resetFishPosRight(fish);
         this.score += 1;
         var scoreFormated = this.zeroPad(this.score, 2);
         this.scoreLabel.text = "SCORE " + scoreFormated;
