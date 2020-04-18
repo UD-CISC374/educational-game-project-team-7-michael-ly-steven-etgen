@@ -7,6 +7,7 @@ export {gameSettings}
 export {BG_WIDTH}
 export {BG_HEIGHT}
 
+
 const DEFAULT_WIDTH: number = 1500;
 const DEFAULT_HEIGHT : number = 1500;
 const BG_WIDTH: number = 2820;
@@ -23,6 +24,9 @@ const config: GameConfig = {
         height: DEFAULT_HEIGHT
     },
     scene: [PreloadScene, MainScene],
+    dom: {
+        createContainer: true
+    },
     physics: {
         default: 'arcade',
         arcade: {
@@ -32,6 +36,7 @@ const config: GameConfig = {
         }
     }
 };
+
 
 const gameSettings = {
     playerSpeed: 600,
