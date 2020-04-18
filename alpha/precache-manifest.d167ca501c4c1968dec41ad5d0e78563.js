@@ -120,15 +120,15 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/educational-game-project-team-7-michael-ly-steven-etgen/alphafavicon.ico"
   },
   {
-    "revision": "7859ba3fe5c6cb3d6ff3",
-    "url": "/educational-game-project-team-7-michael-ly-steven-etgen/alphagen.main.74a407810de9e7973588.bundle.js"
+    "revision": "39a79238d14f9949fda5",
+    "url": "/educational-game-project-team-7-michael-ly-steven-etgen/alphagen.main.13f5eb7a35a08027b753.bundle.js"
   },
   {
     "revision": "9ecf88fe9811c5d77969",
     "url": "/educational-game-project-team-7-michael-ly-steven-etgen/alphagen.vendors.be91aecff310ec1b870c.bundle.js"
   },
   {
-    "revision": "d85cfbe3fec486163fb3478c03cea638",
+    "revision": "0244536450d2cddcfac06c58c3144103",
     "url": "/educational-game-project-team-7-michael-ly-steven-etgen/alphaindex.html"
   },
   {
