@@ -16,6 +16,8 @@ export default class PreloadScene extends Phaser.Scene {
   preload(){
     this.load.image("background", "./assets/images/background.png");
 
+    this.load.html("inputform", "assets/text/inputform.html")
+
     
     //load the spritesheet
     this.load.spritesheet("player", "./assets/spritesheets/shark_sprites.png",{
