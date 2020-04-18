@@ -14,60 +14,59 @@ export default class PreloadScene extends Phaser.Scene {
   }
 
   preload(){
-    this.load.image("background", "./assets/images/background.png");
+    this.load.image("background", "../../assets/images/background.png");
 
-    this.load.html("inputform", "assets/text/inputform.html")
-
+    this.load.html("inputform", "../../assets/text/inputform.html")
     
     //load the spritesheet
-    this.load.spritesheet("player", "./assets/spritesheets/shark_sprites.png",{
+    this.load.spritesheet("player", "../../assets/spritesheets/shark_sprites.png",{
       frameWidth: 96,
       frameHeight: 96,
     });
-    this.load.spritesheet("play1", "./assets/images/play1.png",{
+    this.load.spritesheet("play1", "../../assets/images/play1.png",{
       frameWidth: 733,
       frameHeight: 358
     });
-    this.load.spritesheet("play2", "./assets/images/play2.png",{
+    this.load.spritesheet("play2", "../../assets/images/play2.png",{
       frameWidth: 733,
       frameHeight: 358
     });
-    this.load.spritesheet("splash", "./assets/images/splash.png",{
+    this.load.spritesheet("splash", "../../assets/images/splash.png",{
       frameWidth: 2820,
       frameHeight: 2000
     });
-    this.load.spritesheet("fish1", "./assets/spritesheets/fish1.png",{
+    this.load.spritesheet("fish1", "../../assets/spritesheets/fish1.png",{
       frameWidth: 390,
       frameHeight: 182
     });
-    this.load.spritesheet("fish2", "./assets/spritesheets/fish2.png",{
+    this.load.spritesheet("fish2", "../../assets/spritesheets/fish2.png",{
       frameWidth: 364,
       frameHeight: 208
     });
-    this.load.spritesheet("large_fish", "./assets/spritesheets/fish_spritesheet_1.png",{
+    this.load.spritesheet("large_fish", "../../assets/spritesheets/fish_spritesheet_1.png",{
       frameWidth: 48,
       frameHeight: 48
     });
-    this.load.spritesheet("med_fish", "./assets/spritesheets/fish_spritesheet_2.png",{
+    this.load.spritesheet("med_fish", "../../assets/spritesheets/fish_spritesheet_2.png",{
       frameWidth: 48,
       frameHeight: 48
     });
-    this.load.spritesheet("small_fish", "./assets/spritesheets/fish_spritesheet_3.png",{
+    this.load.spritesheet("small_fish", "../../assets/spritesheets/fish_spritesheet_3.png",{
       frameWidth: 32,
       frameHeight: 32
     });
-    this.load.spritesheet("roundfish", "./assets/spritesheets/fish_spritesheet_4.png",{
+    this.load.spritesheet("roundfish", "../../assets/spritesheets/fish_spritesheet_4.png",{
       frameWidth: 48,
       frameHeight: 48
     });
-    this.load.spritesheet("sunfish", "./assets/spritesheets/fish_spritesheet_5.png",{
+    this.load.spritesheet("sunfish", "../../assets/spritesheets/fish_spritesheet_5.png",{
       frameWidth: 52,
       frameHeight: 96
     });
 
-    this.load.bitmapFont("pixelFont", "./assets/font/font.png", "./assets/font/font.xml");
+    this.load.bitmapFont("pixelFont", "../../assets/font/font.png", "../../assets/font/font.xml");
 
-    this.load.audio("audio_pickup", ["./assets/sounds/pickup.ogg", "./assets/sounds/pickup.mp3"]);
+    this.load.audio("audio_pickup", ["../../assets/sounds/pickup.ogg", "../../assets/sounds/pickup.mp3"]);
   }
 
   create() {

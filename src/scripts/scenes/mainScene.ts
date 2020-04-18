@@ -2,9 +2,9 @@ import {config} from '../game'
 import {gameSettings} from '../game'
 import {BG_WIDTH} from '../game'
 import {BG_HEIGHT} from '../game'
-import { Input, Physics } from 'phaser';
-import Beam from '../objects/beam'
-import Explosion from '../objects/explosions';
+// import { Input, Physics } from 'phaser';
+// import Beam from '../objects/beam'
+// import Explosion from '../objects/explosions';
 
 export default class MainScene extends Phaser.Scene {
   background: Phaser.GameObjects.TileSprite;
