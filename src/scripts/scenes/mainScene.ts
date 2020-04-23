@@ -31,9 +31,24 @@ export default class MainScene extends Phaser.Scene {
   fish4: Phaser.GameObjects.Sprite;
   fish5: Phaser.GameObjects.Sprite;
   fish: Phaser.Physics.Arcade.Group;
+  fish1_sp: number;
+  fish2_sp: number;
+  fish3_sp: number;
+  fish4_sp: number;
+  fish5_sp: number;
+  fish1_dir: string;
+  fish2_dir: string;
+  fish3_dir: string;
+  fish4_dir: string;
+  fish5_dir: string;
+  fish1_old_dir: string;
+  fish2_old_dir: string;
+  fish3_old_dir: string;
+  fish4_old_dir: string;
+  fish5_old_dir: string;
   inputElement: Phaser.GameObjects.DOMElement
   dir_msg: Phaser.GameObjects.Text;
-  pl_model_key: String;
+  pl_model_key: string;
   pause: boolean;
 
     constructor() {
@@ -44,6 +59,21 @@ export default class MainScene extends Phaser.Scene {
       this.bg_height = BG_HEIGHT;
       this.pl_model_key = "_gr"
       this.pause = false;
+      this.fish1_sp = 2;
+      this.fish1_dir = "right";
+      this.fish1_old_dir = "right";
+      this.fish2_sp = 6;
+      this.fish2_dir = "right";
+      this.fish2_old_dir = "right";
+      this.fish3_sp = 3;
+      this.fish3_dir = "right";
+      this.fish3_old_dir = "right";
+      this.fish4_sp = -5;
+      this.fish4_dir = "left";
+      this.fish4_old_dir = "left";
+      this.fish5_sp = -4;
+      this.fish5_dir = "left";
+      this.fish5_old_dir = "left";
     }
 
     create() {
@@ -73,29 +103,36 @@ export default class MainScene extends Phaser.Scene {
       this.fish1.setInteractive();
       this.fish1.setScale(3.5,3.5);
 
+
+
       //TODO: testing for collision accuracy fix
           // this.fish1.input.hitArea = new Phaser.Geom.Circle(9);
           // this.fish1.setDisplaySize(182, 336);
 
       this.fish2 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_height), "roundfish");
-      //this.fish2.play("roundfish_2_right");
+      this.fish2.play("roundfish_2_right");
       this.fish2.setScale(1.5,1.5);
       this.fish2.setInteractive();
+
       //this.fish2.setSize(32,32);
 
       this.fish3 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_height), "large_fish");
       this.fish3.play("large_fish_2_right");
       this.fish3.setInteractive();
       this.fish3.setScale(2,2);
+
       //this.fish3.setSize(24,24);
 
-      this.fish4 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_height), "roundfish");
-      //this.fish4.play("roundfish_2_left");
+      this.fish4 = this.physics.add.sprite(this.bg_width, Phaser.Math.Between(0, this.bg_height), "roundfish");
+      this.fish4.play("roundfish_2_left");
       this.fish4.setScale(1.5,1.5);
 
-      this.fish5 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_height), "large_fish");
-      //this.fish5.play("large_fish_2_left");
+
+      this.fish5 = this.physics.add.sprite(this.bg_width, Phaser.Math.Between(0, this.bg_height), "large_fish");
+      this.fish5.play("large_fish_2_left");
       this.fish5.setScale(2,2);
+
+
 
 
       this.fish = this.physics.add.group();
@@ -160,64 +197,121 @@ export default class MainScene extends Phaser.Scene {
         this.createInputBox();
       }
 
+
       if(!this.pause){
         
         this.movePlayerManager();
-        this.movefishRight(this.fish1, 2);
-        //this.movefishRight(this.fish2, 6);
-        //this.movefishRight(this.fish3, 3);
-        //this.movefishLeft(this.fish4, 6);
-        //this.movefishLeft(this.fish5, 3);
+
+
+        //changes the direction of the fish
+        let dir1 = this.moveFish(this.fish1, this.fish1_sp)
+        if(dir1 != ""){
+          this.fish1_dir = dir1;
+          dir1 = "";
+        }
+        let dir2 = this.moveFish(this.fish2, this.fish2_sp);
+        if(dir2 != ""){
+          this.fish2_dir = dir2;
+          dir2 = "";
+        }
+        let dir3 = this.moveFish(this.fish3, this.fish3_sp);
+        if(dir3 != ""){
+          this.fish3_dir = dir3;
+          dir3 = "";
+        }
+        let dir4 = this.moveFish(this.fish4, this.fish4_sp);
+        if(dir4 != ""){
+          this.fish4_dir = dir4;
+          dir4 = "";
+        }
+        let dir5 = this.moveFish(this.fish5, this.fish5_sp);
+        if(dir5 != ""){
+          this.fish5_dir = dir5;
+          dir5 = "";
+        }
+
+        //changes the animation when the fishs' direction changes
+        if(this.fish1_old_dir != this.fish1_dir){
+          this.fish1_sp = this.reverseSpeed(this.fish1_sp);
+          let anim = "sunfish_1_".concat(this.fish1_dir);
+          this.fish1.play(anim);
+          this.fish1_old_dir = this.fish1_dir;
+        }
+        if(this.fish2_old_dir != this.fish2_dir){
+          this.fish2_sp = this.reverseSpeed(this.fish2_sp);
+          let anim = "roundfish_2_".concat(this.fish2_dir);
+          this.fish2.play(anim);
+          this.fish2_old_dir = this.fish2_dir;
+        }
+        if(this.fish3_old_dir != this.fish3_dir){
+          this.reverseSpeed(this.fish3_sp);
+          let anim = "large_fish_2_".concat(this.fish3_dir);
+          this.fish3.play(anim);
+          this.fish3_old_dir = this.fish3_dir;
+        }
+        if(this.fish4_old_dir != this.fish4_dir){
+          this.fish4_sp = this.reverseSpeed(this.fish4_sp);
+          let anim = "roundfish_2_".concat(this.fish4_dir);
+          this.fish4.play(anim);
+          this.fish4_old_dir = this.fish4_dir;
+        }
+        if(this.fish5_old_dir != this.fish5_dir){
+          this.fish5_sp = this.reverseSpeed(this.fish5_sp);
+          let anim = "large_fish_2_".concat(this.fish5_dir);
+          this.fish5.play(anim);
+          this.fish5_old_dir = this.fish5_dir;
+        }
+
 
 
         
-        if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish2.x, this.fish2.y) < 400) { // Attempting to change direction of the fish when it's close to the player
-          if (this.player.x < this.fish2.x) { // fish moves right if the player is behind it
-            this.movefish2Right();
-          }
-          else if (this.player.x > this.fish2.x) { // fish moves left if the player is ahead
-            this.movefish2Left();
-          }
-        }
-        else {
-          this.movefish2Right();
-        }
+        // if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish2.x, this.fish2.y) < 400) { // Attempting to change direction of the fish when it's close to the player
+        //   if (this.player.x < this.fish2.x) { // fish moves right if the player is behind it
+        //     this.movefish2Right();
+        //   }
+        //   else if (this.player.x > this.fish2.x) { // fish moves left if the player is ahead
+        //     this.movefish2Left();
+        //   }
+        // }
+        // else {
+        //   this.movefish2Right();
+        // }
 
-        if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish3.x, this.fish3.y) < 400) { 
-          if (this.player.x < this.fish3.x+50) { 
-            this.movefish3Right();
-          }
-          else if (this.player.x > this.fish3.x) { 
-            this.movefish3Left();
-          }
-        }
-        else {
-          this.movefish3Right();
-        }
+        // if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish3.x, this.fish3.y) < 400) { 
+        //   if (this.player.x < this.fish3.x+50) { 
+        //     this.movefish3Right();
+        //   }
+        //   else if (this.player.x > this.fish3.x) { 
+        //     this.movefish3Left();
+        //   }
+        // }
+        // else {
+        //   this.movefish3Right();
+        // }
 
-        if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish4.x, this.fish4.y) < 400) { 
-          if (this.player.x < this.fish4.x) { 
-            this.movefish4Right();
-          }
-          else if (this.player.x > this.fish4.x) { 
-            this.movefish4Left();
-          }
-        }
-        else {
-          this.movefish4Left();
-        }
+        // if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish4.x, this.fish4.y) < 400) { 
+        //   if (this.player.x < this.fish4.x) { 
+        //     this.movefish4Right();
+        //   }
+        //   else if (this.player.x > this.fish4.x) { 
+        //     this.movefish4Left();
+        //   }
+        // }
+        // else {
+        //   this.movefish4Left();
+        // }
 
-        if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish5.x, this.fish5.y) < 400) { 
-          if (this.player.x < this.fish5.x) { 
-            this.movefish5Right();
-          }
-          else if (this.player.x > this.fish5.x) { 
-            this.movefish5Left();
-          }
-        }
-        else {
-          this.movefish5Left();
-        }
+        // if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish5.x, this.fish5.y) < 400) { 
+        //   if (this.player.x < this.fish5.x) { 
+        //     this.movefish5Right();
+        //   }
+        //   else if (this.player.x > this.fish5.x) { 
+        //     this.movefish5Left();
+        //   }
+        // }
+        // else {
+        //   this.movefish5Left();
+        // }
     }
     else{
       this.player.setVelocity(0);
@@ -288,45 +382,6 @@ export default class MainScene extends Phaser.Scene {
       gameObject.play("explode");
     }
 
-    movefish2Right() {
-      this.fish2.play("roundfish_2_right", true);
-      this.movefishRight(this.fish2, 6);  
-    }
-
-    movefish2Left() {
-      this.fish2.play("roundfish_2_left", true);
-      this.movefishLeft(this.fish2, 6);
-    }
-
-    movefish3Right() {
-      this.fish3.play("large_fish_2_right", true);
-      this.movefishRight(this.fish3, 3);  
-    }
-
-    movefish3Left() {
-      this.fish3.play("large_fish_2_left", true);
-      this.movefishLeft(this.fish3, 3);
-    }
-
-    movefish4Right() {
-      this.fish4.play("roundfish_2_right", true);
-      this.movefishRight(this.fish4, 6);  
-    }
-
-    movefish4Left() {
-      this.fish4.play("roundfish_2_left", true);
-      this.movefishLeft(this.fish4, 6);
-    }
-
-    movefish5Right() {
-      this.fish5.play("large_fish_2_right", true);
-      this.movefishRight(this.fish5, 3);  
-    }
-
-    movefish5Left() {
-      this.fish5.play("large_fish_2_left", true);
-      this.movefishLeft(this.fish5, 3);
-    }
 
     movefishRight(fish, speed) {
       fish.x += speed;
@@ -342,31 +397,47 @@ export default class MainScene extends Phaser.Scene {
       }
     }
 
-    moveFish(fish, speed) {
+    moveFish(fish, speed):string {
+      let dir = "";
+
       fish.x += speed;
-      if (fish.x > this.bg_width) {
-        this.resetFishPos(fish);
+
+      if (fish.x > this.bg_width || fish.x < 0) {
+        var rand = Phaser.Math.Between(0, 1);
+
+        if(rand == 0){
+          this.resetFishPosRight(fish);
+          dir = "right"
+        }
+        else{
+          this.resetFishPosLeft(fish);
+          dir = "left";
+        }
       }
+
+      return dir;
+
+
     }
 
     resetFishPosRight(fish) {
-      var randomY = Phaser.Math.Between(0, this.bg_height);
-      fish.x = this.bg_width;
-      fish.y = randomY;
-    }
-
-    resetFishPosLeft(fish) {
-      var rand = Phaser.Math.Between(0, 1); //TODO: for going left or right
       var randomY = Phaser.Math.Between(0, this.bg_height);
       fish.x = 0;
       fish.y = randomY;
     }
 
-    resetFishPos(fish) {
+    resetFishPosLeft(fish) {
       var randomY = Phaser.Math.Between(0, this.bg_height);
       fish.x = this.bg_width;
       fish.y = randomY;
     }
+
+    reverseSpeed(speed){
+      speed = speed * -1;
+      return speed;
+    }
+
+
 
 
     checkPlayerBigger(player, fish) {     //checks if the player is bigger than the fish it collided with
