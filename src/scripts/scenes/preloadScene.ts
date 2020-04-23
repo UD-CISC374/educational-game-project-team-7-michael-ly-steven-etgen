@@ -73,9 +73,9 @@ export default class PreloadScene extends Phaser.Scene {
     this.add.text(20,20, "Loading...", {fill: "black"});
 
 
-    //Two Animations for the power ups
+    //Player animations
     this.anims.create({
-      key: "pl_right",
+      key: "pl_right_gr",
       frames: this.anims.generateFrameNumbers("player", {
         start: 24,
         end: 26
@@ -83,7 +83,7 @@ export default class PreloadScene extends Phaser.Scene {
       frameRate: 10,
       repeat: -1,
     });this.anims.create({
-      key: "pl_left",
+      key: "pl_left_gr",
       frames: this.anims.generateFrameNumbers("player", {
         start: 12,
         end: 14
@@ -91,7 +91,7 @@ export default class PreloadScene extends Phaser.Scene {
       frameRate: 10,
       repeat: -1,
     });this.anims.create({
-      key: "pl_up",
+      key: "pl_up_gr",
       frames: this.anims.generateFrameNumbers("player", {
         start: 36,
         end: 38
@@ -100,10 +100,44 @@ export default class PreloadScene extends Phaser.Scene {
       repeat: -1,
     });
     this.anims.create({
-      key: "pl_down",
+      key: "pl_down_gr",
       frames: this.anims.generateFrameNumbers("player", {
         start: 0,
         end: 2
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "pl_right_wh",
+      frames: this.anims.generateFrameNumbers("player", {
+        start: 72,
+        end: 74
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });this.anims.create({
+      key: "pl_left_wh",
+      frames: this.anims.generateFrameNumbers("player", {
+        start: 60,
+        end: 62
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });this.anims.create({
+      key: "pl_up_wh",
+      frames: this.anims.generateFrameNumbers("player", {
+        start: 84,
+        end: 86
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "pl_down_wh",
+      frames: this.anims.generateFrameNumbers("player", {
+        start: 48,
+        end: 50
       }),
       frameRate: 10,
       repeat: -1,
@@ -167,7 +201,7 @@ export default class PreloadScene extends Phaser.Scene {
     this.anims.create({
       key: "large_fish_2_left",
       frames: this.anims.generateFrameNumbers("large_fish", {
-        start: 19,
+        start: 15,
         end: 17
       }),
       frameRate: 10,

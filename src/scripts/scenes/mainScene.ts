@@ -2,6 +2,7 @@ import {config} from '../game'
 import {gameSettings} from '../game'
 import {BG_WIDTH} from '../game'
 import {BG_HEIGHT} from '../game'
+import { runInThisContext } from 'vm';
 // import { Input, Physics } from 'phaser';
 // import Beam from '../objects/beam'
 // import Explosion from '../objects/explosions';
@@ -32,6 +33,8 @@ export default class MainScene extends Phaser.Scene {
   fish: Phaser.Physics.Arcade.Group;
   inputElement: Phaser.GameObjects.DOMElement
   dir_msg: Phaser.GameObjects.Text;
+  pl_model_key: String;
+  pause: boolean;
 
     constructor() {
       super({ key: 'MainScene' });
@@ -39,6 +42,8 @@ export default class MainScene extends Phaser.Scene {
       this.height = Number(config.scale?.height);
       this.bg_width = BG_WIDTH;
       this.bg_height = BG_HEIGHT;
+      this.pl_model_key = "_gr"
+      this.pause = false;
     }
 
     create() {
@@ -149,61 +154,74 @@ export default class MainScene extends Phaser.Scene {
 
   
     update() {
-      
-      this.movePlayerManager();
-      this.movefishRight(this.fish1, 2);
-      //this.movefishRight(this.fish2, 6);
-      //this.movefishRight(this.fish3, 3);
-      //this.movefishLeft(this.fish4, 6);
-      //this.movefishLeft(this.fish5, 3);
-      
-      if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish2.x, this.fish2.y) < 400) { // Attempting to change direction of the fish when it's close to the player
-        if (this.player.x < this.fish2.x) { // fish moves right if the player is behind it
+
+
+      if(this.score == 0){
+        this.createInputBox();
+      }
+
+      if(!this.pause){
+        
+        this.movePlayerManager();
+        this.movefishRight(this.fish1, 2);
+        //this.movefishRight(this.fish2, 6);
+        //this.movefishRight(this.fish3, 3);
+        //this.movefishLeft(this.fish4, 6);
+        //this.movefishLeft(this.fish5, 3);
+
+
+        
+        if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish2.x, this.fish2.y) < 400) { // Attempting to change direction of the fish when it's close to the player
+          if (this.player.x < this.fish2.x) { // fish moves right if the player is behind it
+            this.movefish2Right();
+          }
+          else if (this.player.x > this.fish2.x) { // fish moves left if the player is ahead
+            this.movefish2Left();
+          }
+        }
+        else {
           this.movefish2Right();
         }
-        else if (this.player.x > this.fish2.x) { // fish moves left if the player is ahead
-          this.movefish2Left();
-        }
-      }
-      else {
-        this.movefish2Right();
-      }
 
-      if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish3.x, this.fish3.y) < 400) { 
-        if (this.player.x < this.fish3.x) { 
+        if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish3.x, this.fish3.y) < 400) { 
+          if (this.player.x < this.fish3.x+50) { 
+            this.movefish3Right();
+          }
+          else if (this.player.x > this.fish3.x) { 
+            this.movefish3Left();
+          }
+        }
+        else {
           this.movefish3Right();
         }
-        else if (this.player.x > this.fish3.x) { 
-          this.movefish3Left();
-        }
-      }
-      else {
-        this.movefish3Right();
-      }
 
-      if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish4.x, this.fish4.y) < 400) { 
-        if (this.player.x < this.fish4.x) { 
-          this.movefish4Right();
+        if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish4.x, this.fish4.y) < 400) { 
+          if (this.player.x < this.fish4.x) { 
+            this.movefish4Right();
+          }
+          else if (this.player.x > this.fish4.x) { 
+            this.movefish4Left();
+          }
         }
-        else if (this.player.x > this.fish4.x) { 
+        else {
           this.movefish4Left();
         }
-      }
-      else {
-        this.movefish4Left();
-      }
 
-      if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish5.x, this.fish5.y) < 400) { 
-        if (this.player.x < this.fish5.x) { 
-          this.movefish5Right();
+        if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish5.x, this.fish5.y) < 400) { 
+          if (this.player.x < this.fish5.x) { 
+            this.movefish5Right();
+          }
+          else if (this.player.x > this.fish5.x) { 
+            this.movefish5Left();
+          }
         }
-        else if (this.player.x > this.fish5.x) { 
+        else {
           this.movefish5Left();
         }
-      }
-      else {
-        this.movefish5Left();
-      }
+    }
+    else{
+      this.player.setVelocity(0);
+    }
 
       this.scoreLabel.destroy();
       var scoreFormated = this.zeroPad(this.score, 2);
@@ -229,39 +247,38 @@ export default class MainScene extends Phaser.Scene {
       if(this.cursorKeys.up?.isDown && this.cursorKeys.right?.isDown){
         this.player.setVelocityY(-gameSettings.playerSpeed/1.2);
         this.player.setVelocityX(gameSettings.playerSpeed/1.2)
-        this.player.play("pl_up", true);
+        this.player.play("pl_up" + this.pl_model_key, true);
       }
       else if(this.cursorKeys.up?.isDown && this.cursorKeys.left?.isDown){
         this.player.setVelocityY(-gameSettings.playerSpeed/1.2);
         this.player.setVelocityX(-gameSettings.playerSpeed/1.2)
-        this.player.play("pl_up", true);
+        this.player.play("pl_up" + this.pl_model_key, true);
       }
       else if(this.cursorKeys.down?.isDown && this.cursorKeys.left?.isDown){
         this.player.setVelocityY(gameSettings.playerSpeed/1.2);
         this.player.setVelocityX(-gameSettings.playerSpeed/1.2)
-        this.player.play("pl_down", true);
+        this.player.play("pl_down" + this.pl_model_key, true);
       }
       else if(this.cursorKeys.down?.isDown && this.cursorKeys.right?.isDown){
         this.player.setVelocityY(gameSettings.playerSpeed/1.2);
         this.player.setVelocityX(gameSettings.playerSpeed/1.2)
-        this.player.play("pl_down", true);
+        this.player.play("pl_down" + this.pl_model_key, true);
       }
       else if(this.cursorKeys.left?.isDown){
         this.player.setVelocityX(-gameSettings.playerSpeed);
-        this.player.play("pl_left", true);
+        this.player.play("pl_left" + this.pl_model_key, true);
       }
       else if(this.cursorKeys.right?.isDown){
         this.player.setVelocityX(gameSettings.playerSpeed);
-        this.player.play("pl_right", true);
+        this.player.play("pl_right" + this.pl_model_key, true);
       }
-      
       else if(this.cursorKeys.up?.isDown){
         this.player.setVelocityY(-gameSettings.playerSpeed);
-        this.player.play("pl_up", true);
+        this.player.play("pl_up" + this.pl_model_key, true);
       }
       else if(this.cursorKeys.down?.isDown){
         this.player.setVelocityY(gameSettings.playerSpeed);
-        this.player.play("pl_down", true);
+        this.player.play("pl_down" + this.pl_model_key, true);
       }
     }
   
@@ -325,6 +342,13 @@ export default class MainScene extends Phaser.Scene {
       }
     }
 
+    moveFish(fish, speed) {
+      fish.x += speed;
+      if (fish.x > this.bg_width) {
+        this.resetFishPos(fish);
+      }
+    }
+
     resetFishPosRight(fish) {
       var randomY = Phaser.Math.Between(0, this.bg_height);
       fish.x = this.bg_width;
@@ -335,6 +359,12 @@ export default class MainScene extends Phaser.Scene {
       var rand = Phaser.Math.Between(0, 1); //TODO: for going left or right
       var randomY = Phaser.Math.Between(0, this.bg_height);
       fish.x = 0;
+      fish.y = randomY;
+    }
+
+    resetFishPos(fish) {
+      var randomY = Phaser.Math.Between(0, this.bg_height);
+      fish.x = this.bg_width;
       fish.y = randomY;
     }
 
@@ -392,7 +422,7 @@ export default class MainScene extends Phaser.Scene {
         callbackScope: this
       });
 
-      this.createInputBox();
+      
     }
   
     onTweenComplete(){
@@ -406,6 +436,7 @@ export default class MainScene extends Phaser.Scene {
 
     createInputBox(){
       let context = this;
+      //this.pause = true;
 
       if(this.dir_msg != null){
       this.dir_msg.destroy();
@@ -416,7 +447,7 @@ export default class MainScene extends Phaser.Scene {
 
 
       this.dir_msg = this.add.text(this.mainCam.scrollX+this.width/2 - 175, this.mainCam.scrollY+this.height/4, 
-        'Enter \'shark.color(black)\'', { color: 'black', fontSize: '20px '});
+        'Enter \'shark.color(white)\'', { color: 'white', fontSize: '20px '});
 
       this.inputElement = this.add.dom(this.mainCam.scrollX+this.width/2, 
         this.mainCam.scrollY+this.height/4+50).createFromCache('inputform');
@@ -430,7 +461,7 @@ export default class MainScene extends Phaser.Scene {
           let inputText = <HTMLInputElement>context.inputElement.getChildByName('inputField');
 
           //  Have they entered anything?
-          if (inputText.value == 'shark.color(black)')
+          if (inputText.value == 'shark.color(white)')
           {
               //  Turn off the click events
               context.inputElement.removeListener('click');
@@ -439,10 +470,12 @@ export default class MainScene extends Phaser.Scene {
               context.inputElement.setVisible(false);
 
               //  Populate the text with whatever they typed in
-              context.dir_msg.setText("The shark will now change apparence (in future version)");
+              //context.dir_msg.setText("The shark will now change apparence (in future version)");
+              context.pl_model_key = "_wh";
+              context.pause = false;
           }
           else{
-            context.dir_msg.text = 'Please enter the following exactly as written: \'shark.color(black)\'';
+            context.dir_msg.text = 'Please enter the following exactly as written: \'shark.color(white)\'';
 
                 //  Flash the prompt
                   // this.scene.tweens.add({
