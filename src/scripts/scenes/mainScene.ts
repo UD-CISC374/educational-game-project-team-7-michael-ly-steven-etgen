@@ -196,7 +196,7 @@ export default class MainScene extends Phaser.Scene {
     update() {
 
       
-      if(this.score == 1 && this.input_box_made == false) {
+      if(this.score == 5 && this.input_box_made == false) {
         this.createInputBox();
         this.input_box_made = true;
       }
