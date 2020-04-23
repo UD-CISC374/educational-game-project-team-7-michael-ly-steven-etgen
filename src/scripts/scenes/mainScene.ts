@@ -50,6 +50,7 @@ export default class MainScene extends Phaser.Scene {
   dir_msg: Phaser.GameObjects.Text;
   pl_model_key: string;
   pause: boolean;
+  input_box_made: boolean;
 
     constructor() {
       super({ key: 'MainScene' });
@@ -74,6 +75,8 @@ export default class MainScene extends Phaser.Scene {
       this.fish5_sp = -4;
       this.fish5_dir = "left";
       this.fish5_old_dir = "left";
+      this.score = 0;
+      this.input_box_made = false;
     }
 
     create() {
@@ -163,7 +166,7 @@ export default class MainScene extends Phaser.Scene {
       graphics.closePath();
       graphics.fillPath();
 
-      this.score = 0;
+      
 
 
       //format the score
@@ -192,9 +195,10 @@ export default class MainScene extends Phaser.Scene {
   
     update() {
 
-
-      if(this.score == 0){
+      
+      if(this.score == 1 && this.input_box_made == false) {
         this.createInputBox();
+        this.input_box_made = true;
       }
 
 
@@ -202,80 +206,29 @@ export default class MainScene extends Phaser.Scene {
         
         this.movePlayerManager();
 
+        this.fishMover();
+      }
+      else{
+        this.player.setVelocity(0);
+      }
 
-        //changes the direction of the fish
-        let dir1 = this.moveFish(this.fish1, this.fish1_sp)
-        if(dir1 != ""){
-          this.fish1_dir = dir1;
-          dir1 = "";
-        }
-        let dir2 = this.moveFish(this.fish2, this.fish2_sp);
-        if(dir2 != ""){
-          this.fish2_dir = dir2;
-          dir2 = "";
-        }
-        let dir3 = this.moveFish(this.fish3, this.fish3_sp);
-        if(dir3 != ""){
-          this.fish3_dir = dir3;
-          dir3 = "";
-        }
-        let dir4 = this.moveFish(this.fish4, this.fish4_sp);
-        if(dir4 != ""){
-          this.fish4_dir = dir4;
-          dir4 = "";
-        }
-        let dir5 = this.moveFish(this.fish5, this.fish5_sp);
-        if(dir5 != ""){
-          this.fish5_dir = dir5;
-          dir5 = "";
-        }
 
-        //changes the animation when the fishs' direction changes
-        if(this.fish1_old_dir != this.fish1_dir){
-          this.fish1_sp = this.reverseSpeed(this.fish1_sp);
-          let anim = "sunfish_1_".concat(this.fish1_dir);
-          this.fish1.play(anim);
-          this.fish1_old_dir = this.fish1_dir;
-        }
-        if(this.fish2_old_dir != this.fish2_dir){
-          this.fish2_sp = this.reverseSpeed(this.fish2_sp);
-          let anim = "roundfish_2_".concat(this.fish2_dir);
-          this.fish2.play(anim);
-          this.fish2_old_dir = this.fish2_dir;
-        }
-        if(this.fish3_old_dir != this.fish3_dir){
-          this.reverseSpeed(this.fish3_sp);
-          let anim = "large_fish_2_".concat(this.fish3_dir);
-          this.fish3.play(anim);
-          this.fish3_old_dir = this.fish3_dir;
-        }
-        if(this.fish4_old_dir != this.fish4_dir){
-          this.fish4_sp = this.reverseSpeed(this.fish4_sp);
-          let anim = "roundfish_2_".concat(this.fish4_dir);
-          this.fish4.play(anim);
-          this.fish4_old_dir = this.fish4_dir;
-        }
-        if(this.fish5_old_dir != this.fish5_dir){
-          this.fish5_sp = this.reverseSpeed(this.fish5_sp);
-          let anim = "large_fish_2_".concat(this.fish5_dir);
-          this.fish5.play(anim);
-          this.fish5_old_dir = this.fish5_dir;
-        }
-
+        
 
 
         
         // if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish2.x, this.fish2.y) < 400) { // Attempting to change direction of the fish when it's close to the player
         //   if (this.player.x < this.fish2.x) { // fish moves right if the player is behind it
-        //     this.movefish2Right();
+        //     this.fish1_dir = "right";
+        //     this.fish1_sp = this.reverseSpeed(this.fish1_sp);
         //   }
         //   else if (this.player.x > this.fish2.x) { // fish moves left if the player is ahead
-        //     this.movefish2Left();
+        //     this.fish1_dir = "left";
+        //     this.fish1_sp = this.reverseSpeed(this.fish1_sp);
         //   }
+        //   this.fish1Mover();
         // }
-        // else {
-        //   this.movefish2Right();
-        // }
+
 
         // if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish3.x, this.fish3.y) < 400) { 
         //   if (this.player.x < this.fish3.x+50) { 
@@ -312,15 +265,119 @@ export default class MainScene extends Phaser.Scene {
         // else {
         //   this.movefish5Left();
         // }
-    }
-    else{
-      this.player.setVelocity(0);
-    }
+
 
       this.scoreLabel.destroy();
       var scoreFormated = this.zeroPad(this.score, 2);
       this.scoreLabel = this.add.bitmapText(this.mainCam.scrollX+15, this.mainCam.scrollY+10, "pixelFont", "SCORE " + scoreFormated , 50);
     }
+
+    
+  fish1Mover(){
+
+    //checks the dir and changes the it if necessary for each fish
+    let dir1 = this.moveFish(this.fish1, this.fish1_sp)
+    if(dir1 != ""){
+      this.fish1_dir = dir1;
+      dir1 = "";
+    }
+
+    //changes the animation when the fish direction changes
+    if(this.fish1_old_dir != this.fish1_dir){
+      this.fish1_sp = this.reverseSpeed(this.fish1_sp);
+      let anim = "sunfish_1_".concat(this.fish1_dir);
+      this.fish1.play(anim);
+      this.fish1_old_dir = this.fish1_dir;
+    }
+
+  }
+
+
+  fish2Mover(){
+
+    //checks the dir and changes the it if necessary for each fish
+    let dir2 = this.moveFish(this.fish2, this.fish2_sp);
+    if(dir2 != ""){
+      this.fish2_dir = dir2;
+      dir2 = "";
+    }
+
+    //changes the animation when the fish direction changes
+    if(this.fish2_old_dir != this.fish2_dir){
+      this.fish2_sp = this.reverseSpeed(this.fish2_sp);
+      let anim = "roundfish_2_".concat(this.fish2_dir);
+      this.fish2.play(anim);
+      this.fish2_old_dir = this.fish2_dir;
+    }
+
+  }
+
+  fish3Mover(){
+
+    //checks the dir and changes the it if necessary for each fish
+    let dir3 = this.moveFish(this.fish3, this.fish3_sp);
+    if(dir3 != ""){
+      this.fish3_dir = dir3;
+      dir3 = "";
+    }
+
+    //changes the animation when the fish direction changes
+    if(this.fish3_old_dir != this.fish3_dir){
+      this.reverseSpeed(this.fish3_sp);
+      let anim = "large_fish_2_".concat(this.fish3_dir);
+      this.fish3.play(anim);
+      this.fish3_old_dir = this.fish3_dir;
+    }
+
+  }
+
+  fish4Mover(){
+
+    //checks the dir and changes the it if necessary for each fish
+    let dir4 = this.moveFish(this.fish4, this.fish4_sp);
+    if(dir4 != ""){
+      this.fish4_dir = dir4;
+      dir4 = "";
+    }
+
+    //changes the animation when the fish direction changes
+    if(this.fish4_old_dir != this.fish4_dir){
+      this.fish4_sp = this.reverseSpeed(this.fish4_sp);
+      let anim = "roundfish_2_".concat(this.fish4_dir);
+      this.fish4.play(anim);
+      this.fish4_old_dir = this.fish4_dir;
+    }
+
+  }
+
+  fish5Mover(){
+
+    //checks the dir and changes the it if necessary for each fish
+    let dir5 = this.moveFish(this.fish5, this.fish5_sp);
+    if(dir5 != ""){
+      this.fish5_dir = dir5;
+      dir5 = "";
+    }
+
+    //changes the animation when the fish direction changes
+    if(this.fish5_old_dir != this.fish5_dir){
+      this.fish5_sp = this.reverseSpeed(this.fish5_sp);
+      let anim = "large_fish_2_".concat(this.fish5_dir);
+      this.fish5.play(anim);
+      this.fish5_old_dir = this.fish5_dir;
+    }
+
+  }
+  
+  fishMover() { //handles the movement and direction changes for all of the fish
+
+    this.fish1Mover();
+    this.fish2Mover();
+    this.fish3Mover();
+    this.fish4Mover();
+    this.fish5Mover();
+    
+  }
 
     pickPowerUp(player, powerUp){
       powerUp.disableBody(true, true);
@@ -473,7 +530,7 @@ export default class MainScene extends Phaser.Scene {
       this.mainCam.centerOn(this.bg_width/2, this.bg_height/2)
 
       //take 30 points from the player
-      if(this.score <= 0){
+      if(this.score > 0){
         this.score -= 1;
         var scoreFormated = this.zeroPad(this.score, 2);
         this.scoreLabel.text = "SCORE " + scoreFormated;
@@ -507,28 +564,32 @@ export default class MainScene extends Phaser.Scene {
 
     createInputBox(){
       let context = this;
-      //this.pause = true;
+      this.pause = true;
 
       if(this.dir_msg != null){
       this.dir_msg.destroy();
       }
+
       if(this.inputElement != null){
-        this.inputElement.destroy();
-        }
+        this.inputElement.removeElement;
+      }
+
 
 
       this.dir_msg = this.add.text(this.mainCam.scrollX+this.width/2 - 175, this.mainCam.scrollY+this.height/4, 
         'Enter \'shark.color(white)\'', { color: 'white', fontSize: '20px '});
 
       this.inputElement = this.add.dom(this.mainCam.scrollX+this.width/2, 
-        this.mainCam.scrollY+this.height/4+50).createFromCache('inputform');
+      this.mainCam.scrollY+this.height/4+50).createFromCache('inputform');
 
       this.inputElement.addListener('click');
+
 
       this.inputElement.on('click', function (event) {
 
       if (event.target.name === 'playButton')
       {
+        console.log("inside event");
           let inputText = <HTMLInputElement>context.inputElement.getChildByName('inputField');
 
           //  Have they entered anything?
@@ -543,7 +604,12 @@ export default class MainScene extends Phaser.Scene {
               //  Populate the text with whatever they typed in
               //context.dir_msg.setText("The shark will now change apparence (in future version)");
               context.pl_model_key = "_wh";
-              context.pause = false;
+
+              if(context.dir_msg != null){    //destroy the message
+                context.dir_msg.destroy();
+              }
+              context.player.play("pl_down" + context.pl_model_key, true);   //change player color
+              context.pause = false;        //unpause game
           }
           else{
             context.dir_msg.text = 'Please enter the following exactly as written: \'shark.color(white)\'';

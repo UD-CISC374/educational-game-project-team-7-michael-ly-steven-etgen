@@ -234,6 +234,10 @@ export default class PreloadScene extends Phaser.Scene {
     });
             
       //this.scene.start('MainScene');
+
+      //TODO: Add a real help menu
+      this.add.text(400, 200,
+        'Directions:\nUse the arrow keys to control the shark. Collect fish that you are bigger than \nto gain points, but don\'t try to eat fish that is bigger than you are\! \n Collect 5 points to gain access to your first method. \nPlay through the game to learn about methods in programming!', { color: 'black', fontSize: '20px '});
   }
 
 
