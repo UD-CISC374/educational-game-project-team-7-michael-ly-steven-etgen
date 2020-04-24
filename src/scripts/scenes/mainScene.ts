@@ -157,7 +157,7 @@ export default class MainScene extends Phaser.Scene {
       //this.movefishLeft(this.fish4, 6);
       //this.movefishLeft(this.fish5, 3);
       
-      if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish2.x, this.fish2.y) < 400) { // Attempting to change direction of the fish when it's close to the player
+      if (this.distanceBtwn(this.player, this.fish2) < 400) { // Attempting to change direction of the fish when it's close to the player
         if (this.player.x < this.fish2.x) { // fish moves right if the player is behind it
           this.movefish2Right();
         }
@@ -169,7 +169,7 @@ export default class MainScene extends Phaser.Scene {
         this.movefish2Right();
       }
 
-      if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish3.x, this.fish3.y) < 400) { 
+      if (this.distanceBtwn(this.player, this.fish3) < 400) { 
         if (this.player.x < this.fish3.x) { 
           this.movefish3Right();
         }
@@ -181,7 +181,7 @@ export default class MainScene extends Phaser.Scene {
         this.movefish3Right();
       }
 
-      if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish4.x, this.fish4.y) < 400) { 
+      if (this.distanceBtwn(this.player, this.fish4) < 400) { 
         if (this.player.x < this.fish4.x) { 
           this.movefish4Right();
         }
@@ -193,7 +193,7 @@ export default class MainScene extends Phaser.Scene {
         this.movefish4Left();
       }
 
-      if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish5.x, this.fish5.y) < 400) { 
+      if (this.distanceBtwn(this.player, this.fish5) < 400) { 
         if (this.player.x < this.fish5.x) { 
           this.movefish5Right();
         }
@@ -338,6 +338,9 @@ export default class MainScene extends Phaser.Scene {
       fish.y = randomY;
     }
 
+    distanceBtwn(player, fish) {
+      return Phaser.Math.Distance.Between(player.x, player.y, fish.x, fish.y);
+    }
 
     checkPlayerBigger(player, fish) {     //checks if the player is bigger than the fish it collided with
       const fish_rec = this.getArea(fish.getBounds());
