@@ -600,7 +600,6 @@ export default class MainScene extends Phaser.Scene {
 
       if (event.target.name === 'methodButton')
       {
-        console.log("inside event");
           let inputText = <HTMLInputElement>context.inputElement.getChildByName('inputField');
 
           //  Have they entered anything?
