@@ -202,11 +202,15 @@ export default class MainScene extends Phaser.Scene {
         this.changeSharkSize();
         this.size_box_made = true;
       }
-      else if(this.score % 5 == 0 && this.color_box_made == false && this.score != 0) {
+      else if(this.score % 5 == 0 && this.color_box_made == false && this.score != 0 && this.score != 15) {
         this.changeSharkColor();
         this.color_box_made = true;
       }
 
+
+      if(this.score % 5 == 1){    //allow for a new color change when the points get to the next multiple of 5
+        this.color_box_made = false;
+      }
 
 
       if(!this.pause){
