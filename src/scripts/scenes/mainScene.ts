@@ -50,7 +50,8 @@ export default class MainScene extends Phaser.Scene {
   dir_msg: Phaser.GameObjects.Text;
   pl_model_key: string;
   pause: boolean;
-  input_box_made: boolean;
+  color_box_made: boolean;
+  size_box_made: boolean;
 
     constructor() {
       super({ key: 'MainScene' });
@@ -76,7 +77,8 @@ export default class MainScene extends Phaser.Scene {
       this.fish5_dir = "left";
       this.fish5_old_dir = "left";
       this.score = 0;
-      this.input_box_made = false;
+      this.color_box_made = false;
+      this.size_box_made = false;
     }
 
     create() {
@@ -196,9 +198,13 @@ export default class MainScene extends Phaser.Scene {
     update() {
 
       
-      if(this.score == 5 && this.input_box_made == false) {
-        this.createInputBox();
-        this.input_box_made = true;
+      if(this.score == 0 && this.color_box_made == false) {
+        this.changeSharkColor();
+        this.color_box_made = true;
+      }
+      else if(this.score == 10 && this.size_box_made == false) {
+        this.changeSharkSize();
+        this.size_box_made = true;
       }
 
 
@@ -270,6 +276,8 @@ export default class MainScene extends Phaser.Scene {
       this.scoreLabel.destroy();
       var scoreFormated = this.zeroPad(this.score, 2);
       this.scoreLabel = this.add.bitmapText(this.mainCam.scrollX+15, this.mainCam.scrollY+10, "pixelFont", "SCORE " + scoreFormated , 50);
+    
+    
     }
 
     
@@ -557,12 +565,7 @@ export default class MainScene extends Phaser.Scene {
       this.player.alpha = 1;
     }
 
-    changeShark(){    //TODO add change shark method
-
-    }
-
-
-    createInputBox(){
+    changeSharkSize(){    //TODO add change shark method
       let context = this;
       this.pause = true;
 
@@ -577,23 +580,23 @@ export default class MainScene extends Phaser.Scene {
 
 
       this.dir_msg = this.add.text(this.mainCam.scrollX+this.width/2 - 175, this.mainCam.scrollY+this.height/4, 
-        'Enter \'shark.color(white)\'', { color: 'white', fontSize: '20px '});
+        'Enter \'shark.size(2)\'', { color: 'white', fontSize: '20px '});
 
       this.inputElement = this.add.dom(this.mainCam.scrollX+this.width/2, 
-      this.mainCam.scrollY+this.height/4+50).createFromCache('inputform');
+      this.mainCam.scrollY+this.height/4+50).createFromCache('sizeform');
 
       this.inputElement.addListener('click');
 
 
       this.inputElement.on('click', function (event) {
 
-      if (event.target.name === 'playButton')
+      if (event.target.name === 'methodButton')
       {
         console.log("inside event");
           let inputText = <HTMLInputElement>context.inputElement.getChildByName('inputField');
 
           //  Have they entered anything?
-          if (inputText.value == 'shark.color(white)')
+          if (inputText.value == 'shark.size(2)')
           {
               //  Turn off the click events
               context.inputElement.removeListener('click');
@@ -603,7 +606,72 @@ export default class MainScene extends Phaser.Scene {
 
               //  Populate the text with whatever they typed in
               //context.dir_msg.setText("The shark will now change apparence (in future version)");
-              context.pl_model_key = "_wh";
+
+              if(context.dir_msg != null){    //destroy the message
+                context.dir_msg.destroy();
+              }
+              context.player.setScale(3,3)   //change player size
+              context.pause = false;        //unpause game
+          }
+          else{
+            context.dir_msg.text = 'Please enter the following exactly as written: \'shark.size(2)\'';
+              }
+      }
+
+      });
+    }
+
+
+    changeSharkColor(){
+      let context = this;
+      this.pause = true;
+
+      if(this.dir_msg != null){
+      this.dir_msg.destroy();
+      }
+
+      if(this.inputElement != null){
+        this.inputElement.removeElement;
+      }
+
+      this.dir_msg = this.add.text(this.mainCam.scrollX+this.width/2 - 175, this.mainCam.scrollY+this.height/10, 
+        'Enter \'shark.color(white)\'', { color: 'white', fontSize: '20px '});
+
+      this.inputElement = this.add.dom(this.mainCam.scrollX+this.width/2, 
+      this.mainCam.scrollY+this.height/4+50).createFromCache('colorform');
+
+      this.inputElement.addListener('click');
+
+
+      this.inputElement.on('click', function (event) {
+
+      if (event.target.name === 'methodButton')
+      {
+        console.log("inside event");
+          let inputText = <HTMLInputElement>context.inputElement.getChildByName('inputField');
+
+          //  Have they entered anything?
+          if (inputText.value == 'shark.color(white)' || inputText.value == 'shark.color(gray)' || 
+          inputText.value == 'shark.color(black)' || inputText.value == 'shark.color(green)')
+          {
+              //  Turn off the click events
+              context.inputElement.removeListener('click');
+              //  Hide the login element
+              context.inputElement.setVisible(false);
+              //  Populate the text with whatever they typed in
+              //context.dir_msg.setText("The shark will now change apparence (in future version)");
+              if (inputText.value == 'shark.color(gray)'){
+                context.pl_model_key = "_gr";
+              }
+              else if (inputText.value == 'shark.color(white)'){
+                context.pl_model_key = "_wh";
+              }
+              else if (inputText.value == 'shark.color(black)'){
+                context.pl_model_key = "_bl";
+              }
+              else if (inputText.value == 'shark.color(green)'){
+                context.pl_model_key = "_grn";
+              }
 
               if(context.dir_msg != null){    //destroy the message
                 context.dir_msg.destroy();
@@ -612,7 +680,7 @@ export default class MainScene extends Phaser.Scene {
               context.pause = false;        //unpause game
           }
           else{
-            context.dir_msg.text = 'Please enter the following exactly as written: \'shark.color(white)\'';
+            context.dir_msg.text = 'Please enter the following in the form of: \'shark.color(white)\'';
 
                 //  Flash the prompt
                   // this.scene.tweens.add({

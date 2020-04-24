@@ -16,7 +16,8 @@ export default class PreloadScene extends Phaser.Scene {
   preload(){
     this.load.image("background", "./assets/images/background.png");
 
-    this.load.html("inputform", "./assets/text/inputform.html")
+    this.load.html("colorform", "./assets/text/colorform.html")
+    this.load.html("sizeform", "./assets/text/sizeform.html")
     
     //load the spritesheet
     this.load.spritesheet("player", "./assets/spritesheets/shark_sprites.png",{
@@ -138,6 +139,74 @@ export default class PreloadScene extends Phaser.Scene {
       frames: this.anims.generateFrameNumbers("player", {
         start: 48,
         end: 50
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "pl_right_bl",
+      frames: this.anims.generateFrameNumbers("player", {
+        start: 81,
+        end: 83
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });this.anims.create({
+      key: "pl_left_bl",
+      frames: this.anims.generateFrameNumbers("player", {
+        start: 69,
+        end: 71
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });this.anims.create({
+      key: "pl_up_bl",
+      frames: this.anims.generateFrameNumbers("player", {
+        start: 93,
+        end: 95
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "pl_down_bl",
+      frames: this.anims.generateFrameNumbers("player", {
+        start: 57,
+        end: 59
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "pl_right_grn",
+      frames: this.anims.generateFrameNumbers("player", {
+        start: 33,
+        end: 35
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });this.anims.create({
+      key: "pl_left_grn",
+      frames: this.anims.generateFrameNumbers("player", {
+        start: 21,
+        end: 23
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });this.anims.create({
+      key: "pl_up_grn",
+      frames: this.anims.generateFrameNumbers("player", {
+        start: 45,
+        end: 47
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "pl_down_grn",
+      frames: this.anims.generateFrameNumbers("player", {
+        start: 9,
+        end: 11
       }),
       frameRate: 10,
       repeat: -1,
