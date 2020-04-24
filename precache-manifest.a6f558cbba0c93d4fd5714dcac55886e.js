@@ -8,6 +8,10 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "assets/citations.md"
   },
   {
+    "revision": "1edbb686c84ea47927c7f301dd59f768",
+    "url": "assets/css/style.css"
+  },
+  {
     "revision": "9d79a2ec01455afa082d23e42f457801",
     "url": "assets/font/font.png"
   },
@@ -112,20 +116,24 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "assets/spritesheets/shark_sprites.png"
   },
   {
-    "revision": "1c8fc1c25f5fe59b22ea335c2124e62d",
-    "url": "assets/text/inputform.html"
+    "revision": "c480c3721d0dfd902b285ad67351654e",
+    "url": "assets/text/colorform.html"
+  },
+  {
+    "revision": "731b6dc118bb5a5d334d4fee9bedc179",
+    "url": "assets/text/sizeform.html"
   },
   {
     "revision": "53cefca2a0f75654486b180949686165",
     "url": "favicon.ico"
   },
   {
-    "revision": "a481ba952bdeec874d7d9d93f51c41aa",
+    "revision": "1a35014ff7298e7feb74a79753ed21ef",
     "url": "index.html"
   },
   {
-    "revision": "e6876f48c10a2ca8b1b9",
-    "url": "main.59d0e8a3546c8a349e59.bundle.js"
+    "revision": "49f64dfded00814a441d",
+    "url": "main.967c6e89f29da8c1add0.bundle.js"
   },
   {
     "revision": "dbeea92e2bfb1476caa524c2c9cbacce",

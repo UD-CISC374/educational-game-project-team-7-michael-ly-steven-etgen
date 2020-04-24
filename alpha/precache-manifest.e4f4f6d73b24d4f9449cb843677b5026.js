@@ -1,11 +1,15 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "71b158120c22b5297f9cb9413b7cfddd",
+    "revision": "2084536590b7311dd35e7e34457a31be",
     "url": "/educational-game-project-team-7-michael-ly-steven-etgen/alphaassets/.DS_Store"
   },
   {
     "revision": "deec73c79c02e771f5fe18be9c63cf89",
     "url": "/educational-game-project-team-7-michael-ly-steven-etgen/alphaassets/citations.md"
+  },
+  {
+    "revision": "1edbb686c84ea47927c7f301dd59f768",
+    "url": "/educational-game-project-team-7-michael-ly-steven-etgen/alphaassets/css/style.css"
   },
   {
     "revision": "9d79a2ec01455afa082d23e42f457801",
@@ -112,27 +116,31 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/educational-game-project-team-7-michael-ly-steven-etgen/alphaassets/spritesheets/shark_sprites.png"
   },
   {
-    "revision": "1c8fc1c25f5fe59b22ea335c2124e62d",
-    "url": "/educational-game-project-team-7-michael-ly-steven-etgen/alphaassets/text/inputform.html"
+    "revision": "ffaf3f2e1a3cf05c33afef516340b007",
+    "url": "/educational-game-project-team-7-michael-ly-steven-etgen/alphaassets/text/colorform.html"
+  },
+  {
+    "revision": "86f24087cab6c978e0d4fae612dbec80",
+    "url": "/educational-game-project-team-7-michael-ly-steven-etgen/alphaassets/text/sizeform.html"
   },
   {
     "revision": "53cefca2a0f75654486b180949686165",
     "url": "/educational-game-project-team-7-michael-ly-steven-etgen/alphafavicon.ico"
   },
   {
-    "revision": "39a79238d14f9949fda5",
-    "url": "/educational-game-project-team-7-michael-ly-steven-etgen/alphagen.main.13f5eb7a35a08027b753.bundle.js"
+    "revision": "928677793a21000350ad",
+    "url": "/educational-game-project-team-7-michael-ly-steven-etgen/alphagen.main.99551a200071d2ffd92a.bundle.js"
   },
   {
     "revision": "9ecf88fe9811c5d77969",
     "url": "/educational-game-project-team-7-michael-ly-steven-etgen/alphagen.vendors.be91aecff310ec1b870c.bundle.js"
   },
   {
-    "revision": "0244536450d2cddcfac06c58c3144103",
+    "revision": "130f09b3d33d366a17c478d39c7cf9fd",
     "url": "/educational-game-project-team-7-michael-ly-steven-etgen/alphaindex.html"
   },
   {
-    "revision": "c09c7a564b676a4b9ae7b93f4c4a8756",
+    "revision": "dbeea92e2bfb1476caa524c2c9cbacce",
     "url": "/educational-game-project-team-7-michael-ly-steven-etgen/alphamanifest.json"
   },
   {
