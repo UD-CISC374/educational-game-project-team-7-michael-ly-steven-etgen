@@ -16,7 +16,8 @@ export default class PreloadScene extends Phaser.Scene {
   preload(){
     this.load.image("background", "./assets/images/background.png");
 
-    this.load.html("inputform", "./assets/text/inputform.html")
+    this.load.html("colorform", "./assets/text/colorform.html")
+    this.load.html("sizeform", "./assets/text/sizeform.html")
     
     //load the spritesheet
     this.load.spritesheet("player", "./assets/spritesheets/shark_sprites.png",{
@@ -73,9 +74,9 @@ export default class PreloadScene extends Phaser.Scene {
     this.add.text(20,20, "Loading...", {fill: "black"});
 
 
-    //Two Animations for the power ups
+    //Player animations
     this.anims.create({
-      key: "pl_right",
+      key: "pl_right_gr",
       frames: this.anims.generateFrameNumbers("player", {
         start: 24,
         end: 26
@@ -83,7 +84,7 @@ export default class PreloadScene extends Phaser.Scene {
       frameRate: 10,
       repeat: -1,
     });this.anims.create({
-      key: "pl_left",
+      key: "pl_left_gr",
       frames: this.anims.generateFrameNumbers("player", {
         start: 12,
         end: 14
@@ -91,7 +92,7 @@ export default class PreloadScene extends Phaser.Scene {
       frameRate: 10,
       repeat: -1,
     });this.anims.create({
-      key: "pl_up",
+      key: "pl_up_gr",
       frames: this.anims.generateFrameNumbers("player", {
         start: 36,
         end: 38
@@ -100,10 +101,112 @@ export default class PreloadScene extends Phaser.Scene {
       repeat: -1,
     });
     this.anims.create({
-      key: "pl_down",
+      key: "pl_down_gr",
       frames: this.anims.generateFrameNumbers("player", {
         start: 0,
         end: 2
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "pl_right_wh",
+      frames: this.anims.generateFrameNumbers("player", {
+        start: 72,
+        end: 74
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });this.anims.create({
+      key: "pl_left_wh",
+      frames: this.anims.generateFrameNumbers("player", {
+        start: 60,
+        end: 62
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });this.anims.create({
+      key: "pl_up_wh",
+      frames: this.anims.generateFrameNumbers("player", {
+        start: 84,
+        end: 86
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "pl_down_wh",
+      frames: this.anims.generateFrameNumbers("player", {
+        start: 48,
+        end: 50
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "pl_right_bl",
+      frames: this.anims.generateFrameNumbers("player", {
+        start: 81,
+        end: 83
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });this.anims.create({
+      key: "pl_left_bl",
+      frames: this.anims.generateFrameNumbers("player", {
+        start: 69,
+        end: 71
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });this.anims.create({
+      key: "pl_up_bl",
+      frames: this.anims.generateFrameNumbers("player", {
+        start: 93,
+        end: 95
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "pl_down_bl",
+      frames: this.anims.generateFrameNumbers("player", {
+        start: 57,
+        end: 59
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "pl_right_grn",
+      frames: this.anims.generateFrameNumbers("player", {
+        start: 33,
+        end: 35
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });this.anims.create({
+      key: "pl_left_grn",
+      frames: this.anims.generateFrameNumbers("player", {
+        start: 21,
+        end: 23
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });this.anims.create({
+      key: "pl_up_grn",
+      frames: this.anims.generateFrameNumbers("player", {
+        start: 45,
+        end: 47
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "pl_down_grn",
+      frames: this.anims.generateFrameNumbers("player", {
+        start: 9,
+        end: 11
       }),
       frameRate: 10,
       repeat: -1,
@@ -167,7 +270,7 @@ export default class PreloadScene extends Phaser.Scene {
     this.anims.create({
       key: "large_fish_2_left",
       frames: this.anims.generateFrameNumbers("large_fish", {
-        start: 19,
+        start: 15,
         end: 17
       }),
       frameRate: 10,
@@ -200,6 +303,10 @@ export default class PreloadScene extends Phaser.Scene {
     });
             
       //this.scene.start('MainScene');
+
+      //TODO: Add a real help menu
+      this.add.text(400, 200,
+        'Directions:\nUse the arrow keys to control the shark. Collect fish that you are bigger than \nto gain points, but don\'t try to eat fish that is bigger than you are\! \nCollect 5 points to gain access to your first method. \nAt 15 points, you can change your size!  \nPlay through the game to learn about methods in programming!', { color: 'black', fontSize: '20px '});
   }
 
 
