@@ -197,15 +197,16 @@ export default class MainScene extends Phaser.Scene {
   
     update() {
 
-      
-      if(this.score == 0 && this.color_box_made == false) {
-        this.changeSharkColor();
-        this.color_box_made = true;
-      }
-      else if(this.score == 10 && this.size_box_made == false) {
+
+      if(this.score == 15 && this.size_box_made == false) {
         this.changeSharkSize();
         this.size_box_made = true;
       }
+      else if(this.score % 5 == 0 && this.color_box_made == false && this.score != 0) {
+        this.changeSharkColor();
+        this.color_box_made = true;
+      }
+
 
 
       if(!this.pause){
@@ -577,9 +578,7 @@ export default class MainScene extends Phaser.Scene {
         this.inputElement.removeElement;
       }
 
-
-
-      this.dir_msg = this.add.text(this.mainCam.scrollX+this.width/2 - 175, this.mainCam.scrollY+this.height/4, 
+      this.dir_msg = this.add.text(this.mainCam.scrollX+this.width/2 - 175, this.mainCam.scrollY+this.height/7, 
         'Enter \'shark.size(2)\'', { color: 'white', fontSize: '20px '});
 
       this.inputElement = this.add.dom(this.mainCam.scrollX+this.width/2, 
