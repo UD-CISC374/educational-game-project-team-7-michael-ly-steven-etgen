@@ -1,6 +1,6 @@
 import 'phaser';
-import MainScene from './scenes/mainScene';
-import PreloadScene from './scenes/preloadScene';
+import MainScene from '../scripts/scenes/mainScene';
+import PreloadScene from '../scripts/scenes/preloadScene';
 import GameConfig = Phaser.Types.Core.GameConfig;
 export {config}
 export {gameSettings}

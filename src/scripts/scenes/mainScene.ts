@@ -2,9 +2,10 @@ import {config} from '../game'
 import {gameSettings} from '../game'
 import {BG_WIDTH} from '../game'
 import {BG_HEIGHT} from '../game'
-import { Input, Physics } from 'phaser';
-import Beam from '../objects/beam'
-import Explosion from '../objects/explosions';
+import { runInThisContext } from 'vm';
+// import { Input, Physics } from 'phaser';
+// import Beam from '../objects/beam'
+// import Explosion from '../objects/explosions';
 
 export default class MainScene extends Phaser.Scene {
   background: Phaser.GameObjects.TileSprite;
@@ -30,8 +31,27 @@ export default class MainScene extends Phaser.Scene {
   fish4: Phaser.GameObjects.Sprite;
   fish5: Phaser.GameObjects.Sprite;
   fish: Phaser.Physics.Arcade.Group;
+  fish1_sp: number;
+  fish2_sp: number;
+  fish3_sp: number;
+  fish4_sp: number;
+  fish5_sp: number;
+  fish1_dir: string;
+  fish2_dir: string;
+  fish3_dir: string;
+  fish4_dir: string;
+  fish5_dir: string;
+  fish1_old_dir: string;
+  fish2_old_dir: string;
+  fish3_old_dir: string;
+  fish4_old_dir: string;
+  fish5_old_dir: string;
   inputElement: Phaser.GameObjects.DOMElement
   dir_msg: Phaser.GameObjects.Text;
+  pl_model_key: string;
+  pause: boolean;
+  color_box_made: boolean;
+  size_box_made: boolean;
 
     constructor() {
       super({ key: 'MainScene' });
@@ -39,6 +59,26 @@ export default class MainScene extends Phaser.Scene {
       this.height = Number(config.scale?.height);
       this.bg_width = BG_WIDTH;
       this.bg_height = BG_HEIGHT;
+      this.pl_model_key = "_gr"
+      this.pause = false;
+      this.fish1_sp = 2;
+      this.fish1_dir = "right";
+      this.fish1_old_dir = "right";
+      this.fish2_sp = 6;
+      this.fish2_dir = "right";
+      this.fish2_old_dir = "right";
+      this.fish3_sp = 3;
+      this.fish3_dir = "right";
+      this.fish3_old_dir = "right";
+      this.fish4_sp = -5;
+      this.fish4_dir = "left";
+      this.fish4_old_dir = "left";
+      this.fish5_sp = -4;
+      this.fish5_dir = "left";
+      this.fish5_old_dir = "left";
+      this.score = 0;
+      this.color_box_made = false;
+      this.size_box_made = false;
     }
 
     create() {
@@ -68,29 +108,36 @@ export default class MainScene extends Phaser.Scene {
       this.fish1.setInteractive();
       this.fish1.setScale(3.5,3.5);
 
+
+
       //TODO: testing for collision accuracy fix
           // this.fish1.input.hitArea = new Phaser.Geom.Circle(9);
           // this.fish1.setDisplaySize(182, 336);
 
       this.fish2 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_height), "roundfish");
-      //this.fish2.play("roundfish_2_right");
+      this.fish2.play("roundfish_2_right");
       this.fish2.setScale(1.5,1.5);
       this.fish2.setInteractive();
+
       //this.fish2.setSize(32,32);
 
       this.fish3 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_height), "large_fish");
       this.fish3.play("large_fish_2_right");
       this.fish3.setInteractive();
       this.fish3.setScale(2,2);
+
       //this.fish3.setSize(24,24);
 
-      this.fish4 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_height), "roundfish");
-      //this.fish4.play("roundfish_2_left");
+      this.fish4 = this.physics.add.sprite(this.bg_width, Phaser.Math.Between(0, this.bg_height), "roundfish");
+      this.fish4.play("roundfish_2_left");
       this.fish4.setScale(1.5,1.5);
 
-      this.fish5 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_height), "large_fish");
-      //this.fish5.play("large_fish_2_left");
+
+      this.fish5 = this.physics.add.sprite(this.bg_width, Phaser.Math.Between(0, this.bg_height), "large_fish");
+      this.fish5.play("large_fish_2_left");
       this.fish5.setScale(2,2);
+
+
 
 
       this.fish = this.physics.add.group();
@@ -121,7 +168,7 @@ export default class MainScene extends Phaser.Scene {
       graphics.closePath();
       graphics.fillPath();
 
-      this.score = 0;
+      
 
 
       //format the score
@@ -149,66 +196,193 @@ export default class MainScene extends Phaser.Scene {
 
   
     update() {
+
+
+      if(this.score == 15 && this.size_box_made == false) {
+        this.changeSharkSize();
+        this.size_box_made = true;
+      }
+      else if(this.score % 5 == 0 && this.color_box_made == false && this.score != 0 && this.score != 15) {
+        this.changeSharkColor();
+        this.color_box_made = true;
+      }
+
+
+      if(this.score % 5 == 1){    //allow for a new color change when the points get to the next multiple of 5
+        this.color_box_made = false;
+      }
+
+
+      if(!this.pause){
+        
+        this.movePlayerManager();
+
+        this.fishMover();
+      }
+      else{
+        this.player.setVelocity(0);
+      }
+
       
-      this.movePlayerManager();
-      this.movefishRight(this.fish1, 2);
-      //this.movefishRight(this.fish2, 6);
-      //this.movefishRight(this.fish3, 3);
-      //this.movefishLeft(this.fish4, 6);
-      //this.movefishLeft(this.fish5, 3);
-      
-      if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish2.x, this.fish2.y) < 400) { // Attempting to change direction of the fish when it's close to the player
+      if (this.distanceBtwn(this.player, this.fish1) < 400 && this.isPlayerBigger(this.player, this.fish1)) { 
+        if (this.player.x < this.fish1.x) { 
+          this.fish1_dir = "right";
+        }
+        else if (this.player.x > this.fish1.x) { 
+          this.fish1_dir = "left";
+        }
+      }
+
+      if (this.distanceBtwn(this.player, this.fish2) < 400 && this.isPlayerBigger(this.player, this.fish2)) { // When the player is too close and it's bigger in size
         if (this.player.x < this.fish2.x) { // fish moves right if the player is behind it
-          this.movefish2Right();
+          this.fish2_dir = "right";
         }
         else if (this.player.x > this.fish2.x) { // fish moves left if the player is ahead
-          this.movefish2Left();
+          this.fish2_dir = "left";
         }
       }
-      else {
-        this.movefish2Right();
-      }
 
-      if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish3.x, this.fish3.y) < 400) { 
+      if (this.distanceBtwn(this.player, this.fish3) < 400 && this.isPlayerBigger(this.player, this.fish3)) { 
         if (this.player.x < this.fish3.x) { 
-          this.movefish3Right();
+          this.fish3_dir = "right";
         }
         else if (this.player.x > this.fish3.x) { 
-          this.movefish3Left();
+          this.fish3_dir = "left";
         }
       }
-      else {
-        this.movefish3Right();
-      }
 
-      if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish4.x, this.fish4.y) < 400) { 
+      if (this.distanceBtwn(this.player, this.fish4) < 400 && this.isPlayerBigger(this.player, this.fish4)) { 
         if (this.player.x < this.fish4.x) { 
-          this.movefish4Right();
+          this.fish4_dir = "right";
         }
         else if (this.player.x > this.fish4.x) { 
-          this.movefish4Left();
+          this.fish4_dir = "left";
         }
-      }
-      else {
-        this.movefish4Left();
       }
 
-      if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fish5.x, this.fish5.y) < 400) { 
+      if (this.distanceBtwn(this.player, this.fish5) < 400 && this.isPlayerBigger(this.player, this.fish5)) { 
         if (this.player.x < this.fish5.x) { 
-          this.movefish5Right();
+          this.fish5_dir = "right";
         }
         else if (this.player.x > this.fish5.x) { 
-          this.movefish5Left();
+          this.fish5_dir = "left";
         }
       }
-      else {
-        this.movefish5Left();
-      }
+
 
       this.scoreLabel.destroy();
       var scoreFormated = this.zeroPad(this.score, 2);
       this.scoreLabel = this.add.bitmapText(this.mainCam.scrollX+15, this.mainCam.scrollY+10, "pixelFont", "SCORE " + scoreFormated , 50);
+    
+    
     }
+
+    
+  fish1Mover(){
+
+    //checks the dir and changes the it if necessary for each fish
+    let dir1 = this.moveFish(this.fish1, this.fish1_sp)
+    if(dir1 != ""){
+      this.fish1_dir = dir1;
+      dir1 = "";
+    }
+
+    //changes the animation when the fish direction changes
+    if(this.fish1_old_dir != this.fish1_dir){
+      this.fish1_sp = this.reverseSpeed(this.fish1_sp);
+      let anim = "sunfish_1_".concat(this.fish1_dir);
+      this.fish1.play(anim);
+      this.fish1_old_dir = this.fish1_dir;
+    }
+
+  }
+
+
+  fish2Mover(){
+
+    //checks the dir and changes the it if necessary for each fish
+    let dir2 = this.moveFish(this.fish2, this.fish2_sp);
+    if(dir2 != ""){
+      this.fish2_dir = dir2;
+      dir2 = "";
+    }
+
+    //changes the animation when the fish direction changes
+    if(this.fish2_old_dir != this.fish2_dir){
+      this.fish2_sp = this.reverseSpeed(this.fish2_sp);
+      let anim = "roundfish_2_".concat(this.fish2_dir);
+      this.fish2.play(anim);
+      this.fish2_old_dir = this.fish2_dir;
+    }
+
+  }
+
+  fish3Mover(){
+
+    //checks the dir and changes the it if necessary for each fish
+    let dir3 = this.moveFish(this.fish3, this.fish3_sp);
+    if(dir3 != ""){
+      this.fish3_dir = dir3;
+      dir3 = "";
+    }
+
+    //changes the animation when the fish direction changes
+    if(this.fish3_old_dir != this.fish3_dir){
+      this.fish3_sp = this.reverseSpeed(this.fish3_sp);
+      let anim = "large_fish_2_".concat(this.fish3_dir);
+      this.fish3.play(anim);
+      this.fish3_old_dir = this.fish3_dir;
+    }
+
+  }
+
+  fish4Mover(){
+
+    //checks the dir and changes the it if necessary for each fish
+    let dir4 = this.moveFish(this.fish4, this.fish4_sp);
+    if(dir4 != ""){
+      this.fish4_dir = dir4;
+      dir4 = "";
+    }
+
+    //changes the animation when the fish direction changes
+    if(this.fish4_old_dir != this.fish4_dir){
+      this.fish4_sp = this.reverseSpeed(this.fish4_sp);
+      let anim = "roundfish_2_".concat(this.fish4_dir);
+      this.fish4.play(anim);
+      this.fish4_old_dir = this.fish4_dir;
+    }
+
+  }
+
+  fish5Mover(){
+
+    //checks the dir and changes the it if necessary for each fish
+    let dir5 = this.moveFish(this.fish5, this.fish5_sp);
+    if(dir5 != ""){
+      this.fish5_dir = dir5;
+      dir5 = "";
+    }
+
+    //changes the animation when the fish direction changes
+    if(this.fish5_old_dir != this.fish5_dir){
+      this.fish5_sp = this.reverseSpeed(this.fish5_sp);
+      let anim = "large_fish_2_".concat(this.fish5_dir);
+      this.fish5.play(anim);
+      this.fish5_old_dir = this.fish5_dir;
+    }
+
+  }
+  
+  fishMover() { //handles the movement and direction changes for all of the fish
+
+    this.fish1Mover();
+    this.fish2Mover();
+    this.fish3Mover();
+    this.fish4Mover();
+    this.fish5Mover();
+    
+  }
 
     pickPowerUp(player, powerUp){
       powerUp.disableBody(true, true);
@@ -229,39 +403,38 @@ export default class MainScene extends Phaser.Scene {
       if(this.cursorKeys.up?.isDown && this.cursorKeys.right?.isDown){
         this.player.setVelocityY(-gameSettings.playerSpeed/1.2);
         this.player.setVelocityX(gameSettings.playerSpeed/1.2)
-        this.player.play("pl_up", true);
+        this.player.play("pl_up" + this.pl_model_key, true);
       }
       else if(this.cursorKeys.up?.isDown && this.cursorKeys.left?.isDown){
         this.player.setVelocityY(-gameSettings.playerSpeed/1.2);
         this.player.setVelocityX(-gameSettings.playerSpeed/1.2)
-        this.player.play("pl_up", true);
+        this.player.play("pl_up" + this.pl_model_key, true);
       }
       else if(this.cursorKeys.down?.isDown && this.cursorKeys.left?.isDown){
         this.player.setVelocityY(gameSettings.playerSpeed/1.2);
         this.player.setVelocityX(-gameSettings.playerSpeed/1.2)
-        this.player.play("pl_down", true);
+        this.player.play("pl_down" + this.pl_model_key, true);
       }
       else if(this.cursorKeys.down?.isDown && this.cursorKeys.right?.isDown){
         this.player.setVelocityY(gameSettings.playerSpeed/1.2);
         this.player.setVelocityX(gameSettings.playerSpeed/1.2)
-        this.player.play("pl_down", true);
+        this.player.play("pl_down" + this.pl_model_key, true);
       }
       else if(this.cursorKeys.left?.isDown){
         this.player.setVelocityX(-gameSettings.playerSpeed);
-        this.player.play("pl_left", true);
+        this.player.play("pl_left" + this.pl_model_key, true);
       }
       else if(this.cursorKeys.right?.isDown){
         this.player.setVelocityX(gameSettings.playerSpeed);
-        this.player.play("pl_right", true);
+        this.player.play("pl_right" + this.pl_model_key, true);
       }
-      
       else if(this.cursorKeys.up?.isDown){
         this.player.setVelocityY(-gameSettings.playerSpeed);
-        this.player.play("pl_up", true);
+        this.player.play("pl_up" + this.pl_model_key, true);
       }
       else if(this.cursorKeys.down?.isDown){
         this.player.setVelocityY(gameSettings.playerSpeed);
-        this.player.play("pl_down", true);
+        this.player.play("pl_down" + this.pl_model_key, true);
       }
     }
   
@@ -271,45 +444,6 @@ export default class MainScene extends Phaser.Scene {
       gameObject.play("explode");
     }
 
-    movefish2Right() {
-      this.fish2.play("roundfish_2_right", true);
-      this.movefishRight(this.fish2, 6);  
-    }
-
-    movefish2Left() {
-      this.fish2.play("roundfish_2_left", true);
-      this.movefishLeft(this.fish2, 6);
-    }
-
-    movefish3Right() {
-      this.fish3.play("large_fish_2_right", true);
-      this.movefishRight(this.fish3, 3);  
-    }
-
-    movefish3Left() {
-      this.fish3.play("large_fish_2_left", true);
-      this.movefishLeft(this.fish3, 3);
-    }
-
-    movefish4Right() {
-      this.fish4.play("roundfish_2_right", true);
-      this.movefishRight(this.fish4, 6);  
-    }
-
-    movefish4Left() {
-      this.fish4.play("roundfish_2_left", true);
-      this.movefishLeft(this.fish4, 6);
-    }
-
-    movefish5Right() {
-      this.fish5.play("large_fish_2_right", true);
-      this.movefishRight(this.fish5, 3);  
-    }
-
-    movefish5Left() {
-      this.fish5.play("large_fish_2_left", true);
-      this.movefishLeft(this.fish5, 3);
-    }
 
     movefishRight(fish, speed) {
       fish.x += speed;
@@ -325,17 +459,48 @@ export default class MainScene extends Phaser.Scene {
       }
     }
 
+    moveFish(fish, speed):string {
+      let dir = "";
+
+      fish.x += speed;
+
+      if (fish.x > this.bg_width || fish.x < 0) {
+        var rand = Phaser.Math.Between(0, 1);
+
+        if(rand == 0){
+          this.resetFishPosRight(fish);
+          dir = "right"
+        }
+        else{
+          this.resetFishPosLeft(fish);
+          dir = "left";
+        }
+      }
+
+      return dir;
+
+
+    }
+
     resetFishPosRight(fish) {
+      var randomY = Phaser.Math.Between(0, this.bg_height);
+      fish.x = 0;
+      fish.y = randomY;
+    }
+
+    resetFishPosLeft(fish) {
       var randomY = Phaser.Math.Between(0, this.bg_height);
       fish.x = this.bg_width;
       fish.y = randomY;
     }
 
-    resetFishPosLeft(fish) {
-      var rand = Phaser.Math.Between(0, 1); //TODO: for going left or right
-      var randomY = Phaser.Math.Between(0, this.bg_height);
-      fish.x = 0;
-      fish.y = randomY;
+    reverseSpeed(speed){
+      speed = speed * -1;
+      return speed;
+    }
+
+    distanceBtwn(player, fish) {
+      return Phaser.Math.Distance.Between(player.x, player.y, fish.x, fish.y);
     }
 
 
@@ -358,6 +523,17 @@ export default class MainScene extends Phaser.Scene {
       }
     }
 
+    isPlayerBigger(player, fish) {
+      let fish_area = this.getArea(fish.getBounds());
+      let player_area = this.getArea(player.getBounds());
+      if (player_area > fish_area) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+
     getArea(rec:Phaser.Geom.Rectangle){     //returns the area of a phaser rectangle
       const h = rec.height;
       const w = rec.width;
@@ -372,7 +548,7 @@ export default class MainScene extends Phaser.Scene {
       this.mainCam.centerOn(this.bg_width/2, this.bg_height/2)
 
       //take 30 points from the player
-      if(this.score <= 0){
+      if(this.score > 0){
         this.score -= 1;
         var scoreFormated = this.zeroPad(this.score, 2);
         this.scoreLabel.text = "SCORE " + scoreFormated;
@@ -392,45 +568,42 @@ export default class MainScene extends Phaser.Scene {
         callbackScope: this
       });
 
-      this.createInputBox();
+      
     }
   
     onTweenComplete(){
       this.player.alpha = 1;
     }
 
-    changeShark(){    //TODO add change shark method
-
-    }
-
-
-    createInputBox(){
+    changeSharkSize(){    //TODO add change shark method
       let context = this;
+      this.pause = true;
 
       if(this.dir_msg != null){
       this.dir_msg.destroy();
       }
+
       if(this.inputElement != null){
-        this.inputElement.destroy();
-        }
+        this.inputElement.removeElement;
+      }
 
-
-      this.dir_msg = this.add.text(this.mainCam.scrollX+this.width/2 - 175, this.mainCam.scrollY+this.height/4, 
-        'Enter \'shark.color(black)\'', { color: 'black', fontSize: '20px '});
+      this.dir_msg = this.add.text(this.mainCam.scrollX+this.width/2 - 175, this.mainCam.scrollY+this.height/7, 
+        'Enter \'shark.size(2)\'', { color: 'white', fontSize: '20px '});
 
       this.inputElement = this.add.dom(this.mainCam.scrollX+this.width/2, 
-        this.mainCam.scrollY+this.height/4+50).createFromCache('inputform');
+      this.mainCam.scrollY+this.height/4+50).createFromCache('sizeform');
 
       this.inputElement.addListener('click');
 
+
       this.inputElement.on('click', function (event) {
 
-      if (event.target.name === 'playButton')
+      if (event.target.name === 'methodButton')
       {
           let inputText = <HTMLInputElement>context.inputElement.getChildByName('inputField');
 
           //  Have they entered anything?
-          if (inputText.value == 'shark.color(black)')
+          if (inputText.value == 'shark.size(2)')
           {
               //  Turn off the click events
               context.inputElement.removeListener('click');
@@ -439,10 +612,81 @@ export default class MainScene extends Phaser.Scene {
               context.inputElement.setVisible(false);
 
               //  Populate the text with whatever they typed in
-              context.dir_msg.setText("The shark will now change apparence (in future version)");
+              //context.dir_msg.setText("The shark will now change apparence (in future version)");
+
+              if(context.dir_msg != null){    //destroy the message
+                context.dir_msg.destroy();
+              }
+              context.player.setScale(3,3)   //change player size
+              context.pause = false;        //unpause game
           }
           else{
-            context.dir_msg.text = 'Please enter the following exactly as written: \'shark.color(black)\'';
+            context.dir_msg.text = 'Please enter the following exactly as written: \'shark.size(2)\'';
+              }
+      }
+
+      });
+    }
+
+
+    changeSharkColor(){
+      let context = this;
+      this.pause = true;
+
+      if(this.dir_msg != null){
+      this.dir_msg.destroy();
+      }
+
+      if(this.inputElement != null){
+        this.inputElement.removeElement;
+      }
+
+      this.dir_msg = this.add.text(this.mainCam.scrollX+this.width/2 - 175, this.mainCam.scrollY+this.height/10, 
+        'Enter \'shark.color(white)\'', { color: 'white', fontSize: '20px '});
+
+      this.inputElement = this.add.dom(this.mainCam.scrollX+this.width/2, 
+      this.mainCam.scrollY+this.height/4+50).createFromCache('colorform');
+
+      this.inputElement.addListener('click');
+
+
+      this.inputElement.on('click', function (event) {
+
+      if (event.target.name === 'methodButton')
+      {
+          let inputText = <HTMLInputElement>context.inputElement.getChildByName('inputField');
+
+          //  Have they entered anything?
+          if (inputText.value == 'shark.color(white)' || inputText.value == 'shark.color(gray)' || 
+          inputText.value == 'shark.color(black)' || inputText.value == 'shark.color(green)')
+          {
+              //  Turn off the click events
+              context.inputElement.removeListener('click');
+              //  Hide the login element
+              context.inputElement.setVisible(false);
+              //  Populate the text with whatever they typed in
+              //context.dir_msg.setText("The shark will now change apparence (in future version)");
+              if (inputText.value == 'shark.color(gray)'){
+                context.pl_model_key = "_gr";
+              }
+              else if (inputText.value == 'shark.color(white)'){
+                context.pl_model_key = "_wh";
+              }
+              else if (inputText.value == 'shark.color(black)'){
+                context.pl_model_key = "_bl";
+              }
+              else if (inputText.value == 'shark.color(green)'){
+                context.pl_model_key = "_grn";
+              }
+
+              if(context.dir_msg != null){    //destroy the message
+                context.dir_msg.destroy();
+              }
+              context.player.play("pl_down" + context.pl_model_key, true);   //change player color
+              context.pause = false;        //unpause game
+          }
+          else{
+            context.dir_msg.text = 'Please enter the following in the form of: \'shark.color(white)\'';
 
                 //  Flash the prompt
                   // this.scene.tweens.add({
