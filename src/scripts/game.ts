@@ -11,7 +11,7 @@ export {BG_HEIGHT}
 const DEFAULT_WIDTH: number = 1500;
 const DEFAULT_HEIGHT : number = 1500;
 const BG_WIDTH: number = 2820;
-const BG_HEIGHT : number = 2000;
+const BG_HEIGHT : number = 4000;
 
 
 const config: GameConfig = {

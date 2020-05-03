@@ -52,6 +52,8 @@ export default class MainScene extends Phaser.Scene {
   pause: boolean;
   color_box_made: boolean;
   size_box_made: boolean;
+  bg_surface_height: number;
+  sea_floor: Phaser.GameObjects.Sprite;
 
     constructor() {
       super({ key: 'MainScene' });
@@ -59,6 +61,7 @@ export default class MainScene extends Phaser.Scene {
       this.height = Number(config.scale?.height);
       this.bg_width = BG_WIDTH;
       this.bg_height = BG_HEIGHT;
+      this.bg_surface_height = BG_HEIGHT-1850;
       this.pl_model_key = "_gr"
       this.pause = false;
       this.fish1_sp = 2;
@@ -89,21 +92,26 @@ export default class MainScene extends Phaser.Scene {
       this.physics.world.setBounds(0, 0, this.bg_width-200, this.bg_height)
       this.physics.world.setBoundsCollision();
       
-      this.player = this.physics.add.sprite(this.bg_width/2, this.bg_height/2, "player");
+      this.player = this.physics.add.sprite(this.bg_width/2, this.bg_surface_height/2, "player");
       this.cursorKeys = this.input.keyboard.createCursorKeys();
       this.player.setCollideWorldBounds(true);
       this.player.setScale(2,2);
 
 
       this.mainCam = this.cameras.main.startFollow(this.player);
-      this.cameras.main.setDeadzone(this.width-this.player.width, this.height-this.player.height);
+      this.cameras.main.setDeadzone(this.width-this.player.width, this.height-this.player.height - 30);
       this.background.tilePositionX = this.mainCam.scrollX * .3;
 
 
       this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
-      //this.fish1 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_height), "sunfish");
-      this.fish1 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_height), "sunfish");
+
+      // set the upper sea floor boundry
+      this.sea_floor = this.physics.add.sprite(1550, this.bg_surface_height+150, "sea_floor").setImmovable(true);
+      this.physics.add.collider(this.player, this.sea_floor);
+
+      //this.fish1 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_surface_height), "sunfish");
+      this.fish1 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_surface_height), "sunfish");
       this.fish1.play("sunfish_1_right");
       this.fish1.setInteractive();
       this.fish1.setScale(3.5,3.5);
@@ -114,26 +122,26 @@ export default class MainScene extends Phaser.Scene {
           // this.fish1.input.hitArea = new Phaser.Geom.Circle(9);
           // this.fish1.setDisplaySize(182, 336);
 
-      this.fish2 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_height), "roundfish");
+      this.fish2 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_surface_height), "roundfish");
       this.fish2.play("roundfish_2_right");
       this.fish2.setScale(1.5,1.5);
       this.fish2.setInteractive();
 
       //this.fish2.setSize(32,32);
 
-      this.fish3 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_height), "large_fish");
+      this.fish3 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_surface_height), "large_fish");
       this.fish3.play("large_fish_2_right");
       this.fish3.setInteractive();
       this.fish3.setScale(2,2);
 
       //this.fish3.setSize(24,24);
 
-      this.fish4 = this.physics.add.sprite(this.bg_width, Phaser.Math.Between(0, this.bg_height), "roundfish");
+      this.fish4 = this.physics.add.sprite(this.bg_width, Phaser.Math.Between(0, this.bg_surface_height), "roundfish");
       this.fish4.play("roundfish_2_left");
       this.fish4.setScale(1.5,1.5);
 
 
-      this.fish5 = this.physics.add.sprite(this.bg_width, Phaser.Math.Between(0, this.bg_height), "large_fish");
+      this.fish5 = this.physics.add.sprite(this.bg_width, Phaser.Math.Between(0, this.bg_surface_height), "large_fish");
       this.fish5.play("large_fish_2_left");
       this.fish5.setScale(2,2);
 
@@ -157,16 +165,16 @@ export default class MainScene extends Phaser.Scene {
       this.physics.add.overlap(this.player, this.powerUps, this.pickPowerUp, undefined, this);
       this.physics.add.overlap(this.player, this.fish, this.checkPlayerBigger, undefined, this);
 
-      var graphics = this.add.graphics();
-      graphics.fillStyle(0x000000, 1);
-      graphics.beginPath();
-      graphics.moveTo(0, 0);
-      graphics.lineTo(this.width, 0);
-      graphics.lineTo(this.width, 20);
-      graphics.lineTo(0, 20);
-      graphics.lineTo(0, 0);
-      graphics.closePath();
-      graphics.fillPath();
+      // var graphics = this.add.graphics();
+      // graphics.fillStyle(0x000000, 1);
+      // graphics.beginPath();
+      // graphics.moveTo(0, 0);
+      // graphics.lineTo(this.bg_width, 0);
+      // graphics.lineTo(this.bg_width, 20);
+      // graphics.lineTo(0, 20);
+      // graphics.lineTo(0, 0);
+      // graphics.closePath();
+      // graphics.fillPath();
 
       
 
@@ -483,13 +491,13 @@ export default class MainScene extends Phaser.Scene {
     }
 
     resetFishPosRight(fish) {
-      var randomY = Phaser.Math.Between(0, this.bg_height);
+      var randomY = Phaser.Math.Between(0, this.bg_surface_height);
       fish.x = 0;
       fish.y = randomY;
     }
 
     resetFishPosLeft(fish) {
-      var randomY = Phaser.Math.Between(0, this.bg_height);
+      var randomY = Phaser.Math.Between(0, this.bg_surface_height);
       fish.x = this.bg_width;
       fish.y = randomY;
     }
@@ -542,10 +550,10 @@ export default class MainScene extends Phaser.Scene {
 
     resetPlayer(){
       var x = this.bg_width/2;
-      var y = this.bg_height/5;
+      var y = this.bg_surface_height/5;
 
       this.player.enableBody(true, x, y, true, true);
-      this.mainCam.centerOn(this.bg_width/2, this.bg_height/2)
+      this.mainCam.centerOn(this.bg_width/2, this.bg_surface_height/2)
 
       //take 30 points from the player
       if(this.score > 0){

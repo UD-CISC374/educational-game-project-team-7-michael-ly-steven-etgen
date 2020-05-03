@@ -18,6 +18,7 @@ export default class PreloadScene extends Phaser.Scene {
 
     this.load.html("colorform", "./assets/text/colorform.html")
     this.load.html("sizeform", "./assets/text/sizeform.html")
+
     
     //load the spritesheet
     this.load.spritesheet("player", "./assets/spritesheets/shark_sprites.png",{
@@ -63,6 +64,10 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.spritesheet("sunfish", "./assets/spritesheets/fish_spritesheet_5.png",{
       frameWidth: 52,
       frameHeight: 96
+    });
+    this.load.spritesheet("sea_floor", "/assets/images/sea_floor.png",{
+      frameWidth: 2160,
+      frameHeight: 500,
     });
 
     this.load.bitmapFont("pixelFont", "./assets/font/font.png", "./assets/font/font.xml");
