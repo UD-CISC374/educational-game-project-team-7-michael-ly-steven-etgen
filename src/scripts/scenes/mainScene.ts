@@ -3,9 +3,6 @@ import {gameSettings} from '../game'
 import {BG_WIDTH} from '../game'
 import {BG_HEIGHT} from '../game'
 import { runInThisContext } from 'vm';
-// import { Input, Physics } from 'phaser';
-// import Beam from '../objects/beam'
-// import Explosion from '../objects/explosions';
 
 export default class MainScene extends Phaser.Scene {
   background: Phaser.GameObjects.TileSprite;
@@ -54,6 +51,8 @@ export default class MainScene extends Phaser.Scene {
   size_box_made: boolean;
   bg_surface_height: number;
   sea_floor: Phaser.GameObjects.Sprite;
+  player_speed: number;
+  speed_box_made: boolean;
 
     constructor() {
       super({ key: 'MainScene' });
@@ -82,6 +81,8 @@ export default class MainScene extends Phaser.Scene {
       this.score = 0;
       this.color_box_made = false;
       this.size_box_made = false;
+      this.speed_box_made = false;
+      this.player_speed = gameSettings.playerSpeed;
     }
 
     create() {
@@ -206,11 +207,15 @@ export default class MainScene extends Phaser.Scene {
     update() {
 
 
-      if(this.score == 15 && this.size_box_made == false) {
+      if(this.score == 10 && this.speed_box_made == false) {
+        this.changeSharkSpeed();
+        this.speed_box_made = true;
+      }
+      else if(this.score == 15 && this.size_box_made == false) {
         this.changeSharkSize();
         this.size_box_made = true;
       }
-      else if(this.score % 5 == 0 && this.color_box_made == false && this.score != 0 && this.score != 15) {
+      else if(this.score % 5 == 0 && this.color_box_made == false && this.score != 0 && this.score != 15 && this.score != 10) {
         this.changeSharkColor();
         this.color_box_made = true;
       }
@@ -409,39 +414,39 @@ export default class MainScene extends Phaser.Scene {
       this.player.setVelocity(0);
 
       if(this.cursorKeys.up?.isDown && this.cursorKeys.right?.isDown){
-        this.player.setVelocityY(-gameSettings.playerSpeed/1.2);
-        this.player.setVelocityX(gameSettings.playerSpeed/1.2)
+        this.player.setVelocityY(-this.player_speed/1.2);
+        this.player.setVelocityX(this.player_speed/1.2)
         this.player.play("pl_up" + this.pl_model_key, true);
       }
       else if(this.cursorKeys.up?.isDown && this.cursorKeys.left?.isDown){
-        this.player.setVelocityY(-gameSettings.playerSpeed/1.2);
-        this.player.setVelocityX(-gameSettings.playerSpeed/1.2)
+        this.player.setVelocityY(-this.player_speed/1.2);
+        this.player.setVelocityX(-this.player_speed/1.2)
         this.player.play("pl_up" + this.pl_model_key, true);
       }
       else if(this.cursorKeys.down?.isDown && this.cursorKeys.left?.isDown){
-        this.player.setVelocityY(gameSettings.playerSpeed/1.2);
-        this.player.setVelocityX(-gameSettings.playerSpeed/1.2)
+        this.player.setVelocityY(this.player_speed/1.2);
+        this.player.setVelocityX(-this.player_speed/1.2)
         this.player.play("pl_down" + this.pl_model_key, true);
       }
       else if(this.cursorKeys.down?.isDown && this.cursorKeys.right?.isDown){
-        this.player.setVelocityY(gameSettings.playerSpeed/1.2);
-        this.player.setVelocityX(gameSettings.playerSpeed/1.2)
+        this.player.setVelocityY(this.player_speed/1.2);
+        this.player.setVelocityX(this.player_speed/1.2)
         this.player.play("pl_down" + this.pl_model_key, true);
       }
       else if(this.cursorKeys.left?.isDown){
-        this.player.setVelocityX(-gameSettings.playerSpeed);
+        this.player.setVelocityX(-this.player_speed);
         this.player.play("pl_left" + this.pl_model_key, true);
       }
       else if(this.cursorKeys.right?.isDown){
-        this.player.setVelocityX(gameSettings.playerSpeed);
+        this.player.setVelocityX(this.player_speed);
         this.player.play("pl_right" + this.pl_model_key, true);
       }
       else if(this.cursorKeys.up?.isDown){
-        this.player.setVelocityY(-gameSettings.playerSpeed);
+        this.player.setVelocityY(-this.player_speed);
         this.player.play("pl_up" + this.pl_model_key, true);
       }
       else if(this.cursorKeys.down?.isDown){
-        this.player.setVelocityY(gameSettings.playerSpeed);
+        this.player.setVelocityY(this.player_speed);
         this.player.play("pl_down" + this.pl_model_key, true);
       }
     }
@@ -631,8 +636,7 @@ export default class MainScene extends Phaser.Scene {
           else{
             context.dir_msg.text = 'Please enter the following exactly as written: \'shark.size(2)\'';
               }
-      }
-
+        }
       });
     }
 
@@ -695,20 +699,60 @@ export default class MainScene extends Phaser.Scene {
           }
           else{
             context.dir_msg.text = 'Please enter the following in the form of: \'shark.color(white)\'';
-
-                //  Flash the prompt
-                  // this.scene.tweens.add({
-                  //     targets: text,
-                  //     alpha: 0.2,
-                  //     duration: 250,
-                  //     ease: 'Power3',
-                  //     yoyo: true
-                  // });
               }
+        }
+      }); 
+    }
+
+    changeSharkSpeed(){
+      let context = this;
+      this.pause = true;
+
+      if(this.dir_msg != null){
+      this.dir_msg.destroy();
       }
 
+      if(this.inputElement != null){
+        this.inputElement.removeElement;
+      }
+
+      this.dir_msg = this.add.text(this.mainCam.scrollX+this.width/2 - 175, this.mainCam.scrollY+this.height/10, 
+        'Enter \'shark.speed(2)\'', { color: 'white', fontSize: '20px '});
+
+      this.inputElement = this.add.dom(this.mainCam.scrollX+this.width/2, 
+      this.mainCam.scrollY+this.height/4+50).createFromCache('speedform');
+
+      this.inputElement.addListener('click');
+
+
+      this.inputElement.on('click', function (event) {
+
+      if (event.target.name === 'methodButton')
+      {
+          let inputText = <HTMLInputElement>context.inputElement.getChildByName('inputField');
+
+          //  Have they entered anything?
+          if (inputText.value == 'shark.speed(2)')
+          {
+              //  Turn off the click events
+              context.inputElement.removeListener('click');
+              //  Hide the login element
+              context.inputElement.setVisible(false);
+              //  Populate the text with whatever they typed in
+              //context.dir_msg.setText("The shark will now change apparence (in future version)");
+              context.player_speed = context.player_speed * 1.5;
+
+              if(context.dir_msg != null){    //destroy the message
+                context.dir_msg.destroy();
+              }
+              context.player.play("pl_down" + context.pl_model_key, true);   //change player color
+              context.pause = false;        //unpause game
+          }
+          else{
+            context.dir_msg.text = 'Please enter the following exactly: \'shark.speed(2)\'';
+              }
+        }
       });
-      
     }
 
   
