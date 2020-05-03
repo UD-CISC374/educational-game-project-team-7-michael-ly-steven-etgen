@@ -66,7 +66,7 @@ export default class PreloadScene extends Phaser.Scene {
       frameWidth: 52,
       frameHeight: 96
     });
-    this.load.spritesheet("sea_floor", "/assets/images/sea_floor.png",{
+    this.load.spritesheet("sea_floor", "./assets/images/sea_floor.png",{
       frameWidth: 2160,
       frameHeight: 500,
     });
