@@ -30,22 +30,26 @@ export default class MainScene extends Phaser.Scene {
   fish3: Phaser.GameObjects.Sprite;
   fish4: Phaser.GameObjects.Sprite;
   fish5: Phaser.GameObjects.Sprite;
+  megalodon: Phaser.GameObjects.Sprite;
   fish: Phaser.Physics.Arcade.Group;
   fish1_sp: number;
   fish2_sp: number;
   fish3_sp: number;
   fish4_sp: number;
   fish5_sp: number;
+  megalodon_sp: number;
   fish1_dir: string;
   fish2_dir: string;
   fish3_dir: string;
   fish4_dir: string;
   fish5_dir: string;
+  megalodon_dir: string;
   fish1_old_dir: string;
   fish2_old_dir: string;
   fish3_old_dir: string;
   fish4_old_dir: string;
   fish5_old_dir: string;
+  megalodon_old_dir: string;
   inputElement: Phaser.GameObjects.DOMElement
   dir_msg: Phaser.GameObjects.Text;
   pl_model_key: string;
@@ -79,6 +83,9 @@ export default class MainScene extends Phaser.Scene {
       this.fish5_sp = -4;
       this.fish5_dir = "left";
       this.fish5_old_dir = "left";
+      this.megalodon_sp = 5;
+      this.megalodon_dir = "right";
+      this.megalodon_old_dir = "right";
       this.score = 0;
       this.color_box_made = false;
       this.size_box_made = false;
@@ -145,7 +152,9 @@ export default class MainScene extends Phaser.Scene {
       this.fish5.play("large_fish_2_left");
       this.fish5.setScale(2,2);
 
-
+      this.megalodon = this.physics.add.sprite(this.bg_width, Phaser.Math.Between(2650, this.bg_height), "megalodon");
+      this.megalodon.play("megalodon_right");
+      this.megalodon.setScale(2,2);
 
 
       this.fish = this.physics.add.group();
@@ -164,6 +173,7 @@ export default class MainScene extends Phaser.Scene {
 */
       this.physics.add.overlap(this.player, this.powerUps, this.pickPowerUp, undefined, this);
       this.physics.add.overlap(this.player, this.fish, this.checkPlayerBigger, undefined, this);
+      this.physics.add.overlap(this.player, this.megalodon, this.checkPlayerBigger, undefined, this);
 
       // var graphics = this.add.graphics();
       // graphics.fillStyle(0x000000, 1);
@@ -229,6 +239,32 @@ export default class MainScene extends Phaser.Scene {
       }
       else{
         this.player.setVelocity(0);
+      }
+
+      if (this.distanceBtwn(this.player, this.megalodon) < 400) { // If Megalodon is close to player, it chases after the player.
+        if (!this.isSamePos(this.player, this.megalodon)) {
+          if (this.player.x < this.megalodon.x) {
+            this.megalodon.x -= 4;
+            this.megalodon_dir = "left";
+            if (this.player.y < this.megalodon.y) {
+              this.megalodon.y -= 4;
+            } else {
+              this.megalodon.y += 4;
+            }
+          }
+          else if (this.player.x > this.megalodon.x) {
+            this.megalodon.x += 4;
+            this.megalodon_dir = "right";
+            if (this.player.y < this.megalodon.y) {
+              this.megalodon.y -= 4;
+            } else {
+              this.megalodon.y += 4;
+            }
+          }
+        }        
+      } 
+      else {
+        this.MegalodonMover();
       }
 
       
@@ -381,6 +417,23 @@ export default class MainScene extends Phaser.Scene {
     }
 
   }
+
+  MegalodonMover(){
+
+    let mdir = this.moveMon(this.megalodon, this.megalodon_sp);
+    if(mdir != ""){
+      this.megalodon_dir = mdir;
+      mdir = "";
+    }
+
+    if(this.megalodon_old_dir != this.megalodon_dir){
+      this.megalodon_sp = this.reverseSpeed(this.megalodon_sp);
+      let anim = "megalodon_".concat(this.megalodon_dir);
+      this.megalodon.play(anim);
+      this.megalodon_old_dir = this.megalodon_dir;
+    }
+
+  }
   
   fishMover() { //handles the movement and direction changes for all of the fish
 
@@ -490,6 +543,23 @@ export default class MainScene extends Phaser.Scene {
 
     }
 
+    moveMon(mon, speed):string {
+      let dir = "";
+      mon.x += speed;
+      if (mon.x > this.bg_width || mon.x < 0) {
+        var rand = Phaser.Math.Between(0, 1);
+        if(rand == 0){
+          this.resetMonPosRight(mon);
+          dir = "right"
+        }
+        else{
+          this.resetMonPosLeft(mon);
+          dir = "left";
+        }
+      }
+      return dir;
+    }
+
     resetFishPosRight(fish) {
       var randomY = Phaser.Math.Between(0, this.bg_surface_height);
       fish.x = 0;
@@ -500,6 +570,18 @@ export default class MainScene extends Phaser.Scene {
       var randomY = Phaser.Math.Between(0, this.bg_surface_height);
       fish.x = this.bg_width;
       fish.y = randomY;
+    }
+
+    resetMonPosRight(mon) { // Reset positions for Sea monsters
+      var randomY = Phaser.Math.Between(2650, this.bg_height);
+      mon.x = 0;
+      mon.y = randomY;
+    }
+
+    resetMonPosLeft(mon) {
+      var randomY = Phaser.Math.Between(2650, this.bg_height);
+      mon.x = this.bg_width;
+      mon.y = randomY;
     }
 
     reverseSpeed(speed){
@@ -540,6 +622,10 @@ export default class MainScene extends Phaser.Scene {
       else {
         return false;
       }
+    }
+
+    isSamePos(player, fish) { // Checks if player and fish are in the same position.
+      return (player.x == fish.x && player.y == fish.y);
     }
 
     getArea(rec:Phaser.Geom.Rectangle){     //returns the area of a phaser rectangle

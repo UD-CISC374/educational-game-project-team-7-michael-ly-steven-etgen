@@ -69,6 +69,10 @@ export default class PreloadScene extends Phaser.Scene {
       frameWidth: 2160,
       frameHeight: 500,
     });
+    this.load.spritesheet("megalodon", "./assets/spritesheets/megalodon.png", {
+      frameWidth: 152,
+      frameHeight: 144
+    });
 
     this.load.bitmapFont("pixelFont", "./assets/font/font.png", "./assets/font/font.xml");
 
@@ -286,6 +290,24 @@ export default class PreloadScene extends Phaser.Scene {
       frames: this.anims.generateFrameNumbers("large_fish", {
         start: 27,
         end: 29
+      }),
+      frameRate: 10,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "megalodon_right",
+      frames: this.anims.generateFrameNumbers("megalodon", {
+        start: 6,
+        end: 8
+      }),
+      frameRate: 10,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "megalodon_left",
+      frames: this.anims.generateFrameNumbers("megalodon", {
+        start: 3,
+        end: 5
       }),
       frameRate: 10,
       repeat: -1
