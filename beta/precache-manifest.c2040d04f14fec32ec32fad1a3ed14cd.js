@@ -136,15 +136,15 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/educational-game-project-team-7-michael-ly-steven-etgen/betafavicon.ico"
   },
   {
-    "revision": "35e26252971801057301",
-    "url": "/educational-game-project-team-7-michael-ly-steven-etgen/betagen.main.0e2e52066299c7ca883a.bundle.js"
+    "revision": "cdc1b399d0f65516cb2b",
+    "url": "/educational-game-project-team-7-michael-ly-steven-etgen/betagen.main.6f8ba298de6b533c120c.bundle.js"
   },
   {
     "revision": "9ecf88fe9811c5d77969",
     "url": "/educational-game-project-team-7-michael-ly-steven-etgen/betagen.vendors.be91aecff310ec1b870c.bundle.js"
   },
   {
-    "revision": "b34999923b795a618be53fa59da80a3a",
+    "revision": "d0d01c172e81bf1fa82f192909ea3389",
     "url": "/educational-game-project-team-7-michael-ly-steven-etgen/betaindex.html"
   },
   {
