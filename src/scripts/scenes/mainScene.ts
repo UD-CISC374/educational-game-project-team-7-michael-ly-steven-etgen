@@ -119,7 +119,7 @@ export default class MainScene extends Phaser.Scene {
       this.physics.add.collider(this.player, this.sea_floor);
 
       //this.fish1 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_surface_height), "sunfish");
-      this.fish1 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_surface_height), "sunfish");
+      this.fish1 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_surface_height-200), "sunfish");
       this.fish1.play("sunfish_1_right");
       this.fish1.setInteractive();
       this.fish1.setScale(3.5,3.5);
@@ -130,30 +130,30 @@ export default class MainScene extends Phaser.Scene {
           // this.fish1.input.hitArea = new Phaser.Geom.Circle(9);
           // this.fish1.setDisplaySize(182, 336);
 
-      this.fish2 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_surface_height), "roundfish");
+      this.fish2 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_surface_height-200), "roundfish");
       this.fish2.play("roundfish_2_right");
       this.fish2.setScale(1.5,1.5);
       this.fish2.setInteractive();
 
       //this.fish2.setSize(32,32);
 
-      this.fish3 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_surface_height), "large_fish");
+      this.fish3 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_surface_height-200), "large_fish");
       this.fish3.play("large_fish_2_right");
       this.fish3.setInteractive();
       this.fish3.setScale(2,2);
 
       //this.fish3.setSize(24,24);
 
-      this.fish4 = this.physics.add.sprite(this.bg_width, Phaser.Math.Between(0, this.bg_surface_height), "roundfish");
+      this.fish4 = this.physics.add.sprite(this.bg_width, Phaser.Math.Between(0, this.bg_surface_height-200), "roundfish");
       this.fish4.play("roundfish_2_left");
       this.fish4.setScale(1.5,1.5);
 
 
-      this.fish5 = this.physics.add.sprite(this.bg_width, Phaser.Math.Between(0, this.bg_surface_height), "large_fish");
+      this.fish5 = this.physics.add.sprite(this.bg_width, Phaser.Math.Between(0, this.bg_surface_height-200), "large_fish");
       this.fish5.play("large_fish_2_left");
       this.fish5.setScale(2,2);
 
-      this.megalodon = this.physics.add.sprite(this.bg_width, Phaser.Math.Between(2650, this.bg_height), "megalodon");
+      this.megalodon = this.physics.add.sprite(0, this.bg_height-100, "megalodon");
       this.megalodon.play("megalodon_right");
       this.megalodon.setScale(2,2);
 
@@ -566,27 +566,27 @@ export default class MainScene extends Phaser.Scene {
     }
 
     resetFishPosRight(fish) {
-      var randomY = Phaser.Math.Between(0, this.bg_surface_height);
+      var randomY = Phaser.Math.Between(0, this.bg_surface_height-200);
       fish.x = 0;
       fish.y = randomY;
     }
 
     resetFishPosLeft(fish) {
-      var randomY = Phaser.Math.Between(0, this.bg_surface_height);
+      var randomY = Phaser.Math.Between(0, this.bg_surface_height-200);
       fish.x = this.bg_width;
       fish.y = randomY;
     }
 
     resetMonPosRight(mon) { // Reset positions for Sea monsters
-      var randomY = Phaser.Math.Between(2650, this.bg_height);
+      //var randomY = Phaser.Math.Between(2650, this.bg_height);
       mon.x = 0;
-      mon.y = randomY;
+      mon.y = this.bg_height - 200;
     }
 
     resetMonPosLeft(mon) {
-      var randomY = Phaser.Math.Between(2650, this.bg_height);
+      //var randomY = Phaser.Math.Between(2650, this.bg_height);
       mon.x = this.bg_width;
-      mon.y = randomY;
+      mon.y = this.bg_height - 200;
     }
 
     reverseSpeed(speed){
