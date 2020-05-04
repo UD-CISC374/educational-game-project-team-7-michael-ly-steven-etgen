@@ -2,6 +2,7 @@ import { config } from "../game";
 
 export default class PreloadScene extends Phaser.Scene {
   gameButton: Phaser.GameObjects.Sprite;
+  instructButton: Phaser.GameObjects.Sprite;
   gameText: Phaser.GameObjects.Text;
   width: number;
   height: number;
@@ -33,6 +34,14 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.spritesheet("play2", "./assets/images/play2.png",{
       frameWidth: 733,
       frameHeight: 358
+    });
+    this.load.spritesheet("instruct1", "./assets/images/Instruct_1.png",{
+      frameWidth: 428,
+      frameHeight: 82
+    });
+    this.load.spritesheet("instruct2", "./assets/images/Instruct_2.png",{
+      frameWidth: 430,
+      frameHeight: 84
     });
     this.load.spritesheet("splash", "./assets/images/splash.png",{
       frameWidth: 2820,
@@ -317,24 +326,45 @@ export default class PreloadScene extends Phaser.Scene {
     this.splash = this.add.tileSprite(this.width/2, this.height/2, 3000, 1500, "splash");
 
     this.gameButton = this.add.sprite(100, 200, "play1").setInteractive();
+    this.instructButton = this.add.sprite(this.width/2, 900, "instruct1").setInteractive();
     this.centerButton(this.gameButton, 1);
     
     
     this.gameButton.on('pointerdown', () => this.clickButton());
 
-    this.input.on('pointerover', function (event, gameObjects) {
+    /*this.input.on('pointerover', function (event, gameObjects) {
       gameObjects[0].setTexture("play2");
     });
       
     this.input.on('pointerout', function (event, gameObjects) {
       gameObjects[0].setTexture("play1");
+    });*/
+
+    this.gameButton.on('pointerover', () => {
+      this.gameButton.setTexture("play2");
+    });
+
+    this.gameButton.on('pointerout', () => {
+      this.gameButton.setTexture("play1");
+    });
+
+    this.instructButton.on('pointerdown', () => {
+      this.scene.start("InstructScene1");
+    });
+
+    this.instructButton.on('pointerover', () => {
+      this.instructButton.setTexture("instruct2");
+    });
+
+    this.instructButton.on('pointerout', () => {
+      this.instructButton.setTexture("instruct1");
     });
             
       //this.scene.start('MainScene');
 
       //TODO: Add a real help menu
-      this.add.text(400, 200,
-        'Directions:\nUse the arrow keys to control the shark. Collect fish that you are bigger than \nto gain points, but don\'t try to eat fish that is bigger than you are\! \nCollect 5 points to gain access to your first method. \nAt 15 points, you can change your size!  \nPlay through the game to learn about methods in programming!', { color: 'black', fontSize: '20px '});
+      /*this.add.text(400, 200,
+        'Directions:\nUse the arrow keys to control the shark. Collect fish that you are bigger than \nto gain points, but don\'t try to eat fish that is bigger than you are\! \nCollect 5 points to gain access to your first method. \nAt 15 points, you can change your size!  \nPlay through the game to learn about methods in programming!', { color: 'black', fontSize: '20px '});*/
   }
 
 
