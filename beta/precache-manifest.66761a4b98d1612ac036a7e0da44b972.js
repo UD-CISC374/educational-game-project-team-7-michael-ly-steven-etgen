@@ -48,8 +48,20 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/educational-game-project-team-7-michael-ly-steven-etgen/betaassets/images/.DS_Store"
   },
   {
+    "revision": "a686cff41a77288461b0d43b6a60a135",
+    "url": "/educational-game-project-team-7-michael-ly-steven-etgen/betaassets/images/Instruct_1.png"
+  },
+  {
+    "revision": "264e9c529bc9fb97aa055ccd674aeadc",
+    "url": "/educational-game-project-team-7-michael-ly-steven-etgen/betaassets/images/Instruct_2.png"
+  },
+  {
     "revision": "8331e374f9afbc5d88c0d378b714e416",
     "url": "/educational-game-project-team-7-michael-ly-steven-etgen/betaassets/images/background.png"
+  },
+  {
+    "revision": "261ba96726db091493a75819d711749a",
+    "url": "/educational-game-project-team-7-michael-ly-steven-etgen/betaassets/images/next.png"
   },
   {
     "revision": "bd6819cc933aac78f9c7ff50c67cfe6d",
@@ -136,15 +148,15 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/educational-game-project-team-7-michael-ly-steven-etgen/betafavicon.ico"
   },
   {
-    "revision": "94f882429e2b3b859648",
-    "url": "/educational-game-project-team-7-michael-ly-steven-etgen/betagen.main.490273d06d39287009ec.bundle.js"
+    "revision": "dff63b5f32834fd248ad",
+    "url": "/educational-game-project-team-7-michael-ly-steven-etgen/betagen.main.c380bfc7e813b84e6c0e.bundle.js"
   },
   {
-    "revision": "9ecf88fe9811c5d77969",
-    "url": "/educational-game-project-team-7-michael-ly-steven-etgen/betagen.vendors.be91aecff310ec1b870c.bundle.js"
+    "revision": "b9f1624beac717ba2e84",
+    "url": "/educational-game-project-team-7-michael-ly-steven-etgen/betagen.vendors.72825c0f5d528c2cfe6d.bundle.js"
   },
   {
-    "revision": "0f1af93c25d31cc9e7e808577210d75b",
+    "revision": "fc1b41efa57411fa78e877217eb06b4f",
     "url": "/educational-game-project-team-7-michael-ly-steven-etgen/betaindex.html"
   },
   {
