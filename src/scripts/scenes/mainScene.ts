@@ -155,7 +155,7 @@ export default class MainScene extends Phaser.Scene {
 
       this.megalodon = this.physics.add.sprite(0, this.bg_height-100, "megalodon");
       this.megalodon.play("megalodon_right");
-      this.megalodon.setScale(2,2);
+      this.megalodon.setScale(4,4);
 
 
       this.fish = this.physics.add.group();
