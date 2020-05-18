@@ -46,8 +46,8 @@ export default class InstructScene3 extends Phaser.Scene {
         this.background.setOrigin(0, 0);
         this.background.setScrollFactor(1);
 
-        this.add.text(this.bg_width/2-400, 1400, 
-            'After you gain enough points, you will be prompted with \nan input box as shown above! You can call methods to \nchange attributes of the shark. This will allow you to \npractice calling methods.', 
+        this.add.text(this.bg_width/2-400, 1300, 
+            'After you gain enough points, you will be prompted with \nan input box as shown above! You can call methods to \nchange attributes of the shark. This will allow you to \npractice calling methods. \n*Note: color is just for the looks of the shark, you can \neven change the size and speed of the shark later on.', 
             {fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif', 
             fontSize: '40px' 
         });
@@ -138,7 +138,7 @@ export default class InstructScene3 extends Phaser.Scene {
         }
   
         this.dir_msg = this.add.text(this.mainCam.scrollX+this.width/2 - 175, this.mainCam.scrollY+this.height/10, 
-          'Enter \'shark.color(white)\'', { color: 'white', fontSize: '20px '});
+          'Enter \'shark.setColor(white)\'', { color: 'white', fontSize: '20px '});
   
         this.inputElement = this.add.dom(this.mainCam.scrollX+this.width/2, 
         this.mainCam.scrollY+this.height/4+50).createFromCache('colorform');
@@ -153,8 +153,8 @@ export default class InstructScene3 extends Phaser.Scene {
             let inputText = <HTMLInputElement>context.inputElement.getChildByName('inputField');
   
             //  Have they entered anything?
-            if (inputText.value == 'shark.color(white)' || inputText.value == 'shark.color(gray)' || 
-            inputText.value == 'shark.color(black)' || inputText.value == 'shark.color(green)')
+            if (inputText.value == 'shark.setColor(white)' || inputText.value == 'shark.setColor(gray)' || 
+            inputText.value == 'shark.setColor(black)' || inputText.value == 'shark.setColor(green)')
             {
                 //  Turn off the click events
                 context.inputElement.removeListener('click');
@@ -162,16 +162,16 @@ export default class InstructScene3 extends Phaser.Scene {
                 context.inputElement.setVisible(false);
                 //  Populate the text with whatever they typed in
                 //context.dir_msg.setText("The shark will now change apparence (in future version)");
-                if (inputText.value == 'shark.color(gray)'){
+                if (inputText.value == 'shark.setColor(gray)'){
                   context.pl_model_key = "_gr";
                 }
-                else if (inputText.value == 'shark.color(white)'){
+                else if (inputText.value == 'shark.setColor(white)'){
                   context.pl_model_key = "_wh";
                 }
-                else if (inputText.value == 'shark.color(black)'){
+                else if (inputText.value == 'shark.setColor(black)'){
                   context.pl_model_key = "_bl";
                 }
-                else if (inputText.value == 'shark.color(green)'){
+                else if (inputText.value == 'shark.setColor(green)'){
                   context.pl_model_key = "_grn";
                 }
   
@@ -182,7 +182,7 @@ export default class InstructScene3 extends Phaser.Scene {
                 context.pause = false;        //unpause game
             }
             else {
-              context.dir_msg.text = 'Please enter the following in the form of: \'shark.color(white)\'';
+              context.dir_msg.text = 'Please enter the following in the form of: \'shark.setColor(white)\'';
             }
           }
         }); 

@@ -7,6 +7,7 @@ export default class PreloadScene extends Phaser.Scene {
   width: number;
   height: number;
   splash: Phaser.GameObjects.TileSprite;
+  maintrack: Phaser.Sound.BaseSound;
 
     constructor() {
     super({ key: 'PreloadScene' });
@@ -85,6 +86,12 @@ export default class PreloadScene extends Phaser.Scene {
     });
 
     this.load.bitmapFont("pixelFont", "./assets/font/font.png", "./assets/font/font.xml");
+    
+    this.load.audio("bite", "./assets/sounds/bite.wav"); // Sound effect for eating fish
+
+    this.load.audio("main", "./assets/sounds/main_menu.ogg"); // main menu soundtrack
+
+    this.load.audio("ingame", "./assets/sounds/in_game.ogg"); // in game soundtrack
 
     this.load.audio("audio_pickup", ["./assets/sounds/pickup.ogg", "./assets/sounds/pickup.mp3"]);
   }
@@ -350,6 +357,7 @@ export default class PreloadScene extends Phaser.Scene {
 
     this.instructButton.on('pointerdown', () => {
       this.scene.start("InstructScene1");
+      this.maintrack.pause();
     });
 
     this.instructButton.on('pointerover', () => {
@@ -359,7 +367,9 @@ export default class PreloadScene extends Phaser.Scene {
     this.instructButton.on('pointerout', () => {
       this.instructButton.setTexture("instruct1");
     });
-            
+          
+    this.maintrack = this.sound.add("main");
+    this.maintrack.play();
       //this.scene.start('MainScene');
 
       //TODO: Add a real help menu
@@ -377,6 +387,7 @@ export default class PreloadScene extends Phaser.Scene {
 
   public clickButton() {
     this.scene.start('MainScene');
+    this.maintrack.stop();
   }
 
 }

@@ -47,12 +47,12 @@ export default class InstructScene2 extends Phaser.Scene {
         this.background.setScrollFactor(1);
 
         this.add.text(this.bg_width/2-400, 600, 
-            'Eat fish smaller than you to gain points! Avoid fish bigger \nthan you. If you attempt to eat them, you will lose points \nand respawn.', 
+            'Eat fish smaller than you to gain points! Avoid fish bigger \nthan you. If you attempt to eat them, you will lose points \nand respawn. \n*Hint: In the actual game, fish smaller than you will try to \nswim the other way if they get too lose.', 
             {fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif', 
             fontSize: '40px' 
         });
 
-        this.nextButton = this.add.sprite(this.bg_width/2, 800, "next").setInteractive();
+        this.nextButton = this.add.sprite(this.bg_width/2, 900, "next").setInteractive();
         this.nextButton.on('pointerdown', () => {
             this.scene.start("InstructScene3");
         });
@@ -179,6 +179,7 @@ export default class InstructScene2 extends Phaser.Scene {
         const player_rec = this.getArea(player.getBounds());
         if(player_rec > fish_rec){
           this.resetFishPos(fish);
+          this.sound.play("bite");
           return true;
         }
         else if(this.player.alpha < 1){
