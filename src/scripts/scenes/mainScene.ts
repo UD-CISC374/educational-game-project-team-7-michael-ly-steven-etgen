@@ -302,6 +302,7 @@ export default class MainScene extends Phaser.Scene {
         this.movePlayerManager();
 
         this.fishMover();
+        //this.MegalodonMover();
       }
       else{
         this.player.setVelocity(0);
@@ -332,7 +333,6 @@ export default class MainScene extends Phaser.Scene {
       else {
         this.MegalodonMover();
       }
-
       
       if (this.distanceBtwn(this.player, this.fish1) < 400 && this.isPlayerBigger(this.player, this.fish1)) { 
         if (this.player.x < this.fish1.x) { 

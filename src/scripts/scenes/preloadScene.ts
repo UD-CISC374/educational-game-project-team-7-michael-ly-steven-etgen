@@ -347,7 +347,6 @@ export default class PreloadScene extends Phaser.Scene {
     this.input.on('pointerout', function (event, gameObjects) {
       gameObjects[0].setTexture("play1");
     });*/
-
     this.gameButton.on('pointerover', () => {
       this.gameButton.setTexture("play2");
     });
