@@ -18,6 +18,7 @@ export default class MainScene extends Phaser.Scene {
   projectiles: Phaser.GameObjects.Group;
   score: number;
   scoreLabel: Phaser.GameObjects.BitmapText;
+  methodLabel: Phaser.GameObjects.BitmapText;
   music: any;
   pickupSound: Phaser.Sound.BaseSound;
   bg_width: number;
@@ -62,6 +63,11 @@ export default class MainScene extends Phaser.Scene {
   player_speed: number;
   speed_box_made: boolean;
   ingame_track: Phaser.Sound.BaseSound;
+  nextUpgrade: string;
+  neededScore: number;
+  neededScoreLabel: Phaser.GameObjects.BitmapText;
+  second_size_box_made: boolean;
+  lastFive: number;
 
     constructor() {
       super({ key: 'MainScene' });
@@ -96,8 +102,10 @@ export default class MainScene extends Phaser.Scene {
       this.score = 0;
       this.color_box_made = false;
       this.size_box_made = false;
+      this.second_size_box_made = false;
       this.speed_box_made = false;
       this.player_speed = gameSettings.playerSpeed;
+      this.lastFive = 0;
     }
 
     create() {
@@ -127,7 +135,7 @@ export default class MainScene extends Phaser.Scene {
 
 
       // set the upper sea floor boundry
-      this.sea_floor = this.physics.add.sprite(1550, this.bg_surface_height+150, "sea_floor").setImmovable(true);
+      this.sea_floor = this.physics.add.sprite(1750, this.bg_surface_height+150, "sea_floor").setImmovable(true);
       this.physics.add.collider(this.player, this.sea_floor);
 
       //this.fish1 = this.physics.add.sprite(0, Phaser.Math.Between(0, this.bg_surface_height), "sunfish");
@@ -170,9 +178,9 @@ export default class MainScene extends Phaser.Scene {
       this.fish6.setInteractive();
       this.fish6.setScale(3.5,3.5);
 
-      this.megalodon = this.physics.add.sprite(0, this.bg_height-100, "megalodon");
+      this.megalodon = this.physics.add.sprite(this.bg_width/2, this.bg_height-1000, "megalodon");
       this.megalodon.play("megalodon_right");
-      this.megalodon.setScale(4,4);
+      this.megalodon.setScale(3.5,3.5);
 
 
       this.fish = this.physics.add.group();
@@ -210,7 +218,14 @@ export default class MainScene extends Phaser.Scene {
 
       //format the score
       var scoreFormated = this.zeroPad(this.score, 2);
-      this.scoreLabel = this.add.bitmapText(this.mainCam.scrollX+10, this.mainCam.scrollY+5, "pixelFont", "SCORE " + scoreFormated , 50);
+      this.scoreLabel = this.add.bitmapText(this.mainCam.scrollX+15, this.mainCam.scrollY+10, "pixelFont", "SCORE " + scoreFormated , 50);
+
+
+      //methodLabel so players can see what method is next
+      this.nextUpgrade = "setColor"
+      this.neededScore = 5;
+      this.methodLabel = this.add.bitmapText(this.mainCam.scrollX+this.width-450, this.mainCam.scrollY+10, "pixelFont", "Next Upgrade: " + this.nextUpgrade , 50);
+      this.neededScoreLabel = this.add.bitmapText(this.mainCam.scrollX+this.width-450, this.mainCam.scrollY+50, "pixelFont", "Needed Score: " + this.neededScore , 50);
 
       //this.pickupSound = this.sound.add("audio_pickup");
 
@@ -234,23 +249,52 @@ export default class MainScene extends Phaser.Scene {
   
     update() {
 
-      if(this.score == 10 && this.speed_box_made == false) {
+      if(this.score >= 5 && this.score < 10 && this.color_box_made == false) {
+        this.changeSharkColor();
+          this.nextUpgrade = "setSpeed";
+          this.neededScore = this.neededScore + 5;
+          this.color_box_made = true;
+      }
+      else if(this.score >= 10 && this.score < 15 && this.speed_box_made == false) {
         this.changeSharkSpeed();
+        this.nextUpgrade = "setSize";
+        this.neededScore = this.neededScore + 5;
         this.speed_box_made = true;
       }
-      else if(this.score == 15 && this.size_box_made == false) {
+      else if(this.score >= 15 && this.score < 20 && this.size_box_made == false) {
         this.changeSharkSize();
+        this.nextUpgrade = "setColor";
+        this.neededScore = this.neededScore + 5;
         this.size_box_made = true;
-      }
-      else if(this.score % 5 == 0 && this.color_box_made == false && this.score != 0 && this.score != 15 && this.score != 10) {
-        this.changeSharkColor();
-        this.color_box_made = true;
-      }
-
-
-      if(this.score % 5 == 1){    //allow for a new color change when the points get to the next multiple of 5
         this.color_box_made = false;
       }
+      else if(this.score >= 20 && this.score < 25 && this.color_box_made == false) {
+        this.changeSharkColor();
+        this.nextUpgrade = "setSize";
+        this.neededScore = this.neededScore + 5;
+        this.color_box_made = true;
+        }
+      else if(this.score >= 25 && this.score < 30 && this.second_size_box_made == false) {
+        this.changeSharkSizeMax();
+        this.nextUpgrade = "setColor";
+        this.neededScore = this.neededScore + 5;
+        this.second_size_box_made = true;
+        this.color_box_made = false;
+      }
+      // else if(this.score >= 30 && this.score % 5 == 0 && this.color_box_made == false) {
+      //   this.changeSharkColor();
+      //   this.nextUpgrade = "setColor";
+      //   this.lastFive = 30;
+      //   this.neededScore = this.neededScore + 5;
+      //   this.color_box_made = true;
+      // }
+      // else if(this.score % 5 == 1 && this.score > 30){ //allow for a new color change when the points get to the next multiple of 5
+      //   this.color_box_made = false;
+      // }
+
+
+
+
 
 
       if(!this.pause){
@@ -348,6 +392,12 @@ export default class MainScene extends Phaser.Scene {
       this.scoreLabel.destroy();
       var scoreFormated = this.zeroPad(this.score, 2);
       this.scoreLabel = this.add.bitmapText(this.mainCam.scrollX+15, this.mainCam.scrollY+10, "pixelFont", "SCORE " + scoreFormated , 50);
+
+      this.methodLabel.destroy();
+      this.methodLabel = this.add.bitmapText(this.mainCam.scrollX+this.width-450, this.mainCam.scrollY+10, "pixelFont", "Next Upgrade: " + this.nextUpgrade , 50);
+
+      this.neededScoreLabel.destroy();
+      this.neededScoreLabel = this.add.bitmapText(this.mainCam.scrollX+this.width-450, this.mainCam.scrollY+50, "pixelFont", "Needed Score: " + this.neededScore , 50);
     
     
     }
@@ -619,13 +669,13 @@ export default class MainScene extends Phaser.Scene {
     resetMonPosRight(mon) { // Reset positions for Sea monsters
       //var randomY = Phaser.Math.Between(2650, this.bg_height);
       mon.x = 0;
-      mon.y = this.bg_height - 200;
+      mon.y = this.bg_height - 1000;
     }
 
     resetMonPosLeft(mon) {
       //var randomY = Phaser.Math.Between(2650, this.bg_height);
       mon.x = this.bg_width;
-      mon.y = this.bg_height - 200;
+      mon.y = this.bg_height - 1000;
     }
 
     reverseSpeed(speed){
@@ -714,7 +764,7 @@ export default class MainScene extends Phaser.Scene {
       this.player.alpha = 1;
     }
 
-    changeSharkSize(){    //TODO add change shark method
+    changeSharkSize(){
       let context = this;
       this.pause = true;
 
@@ -726,8 +776,6 @@ export default class MainScene extends Phaser.Scene {
         this.inputElement.removeElement;
       }
 
-      this.dir_msg = this.add.text(this.mainCam.scrollX+this.width/2 - 175, this.mainCam.scrollY+this.height/7, 
-        'Enter \'shark.setSize(2)\'', { color: 'white', fontSize: '20px '});
 
       this.inputElement = this.add.dom(this.mainCam.scrollX+this.width/2, 
       this.mainCam.scrollY+this.height/4+50).createFromCache('sizeform');
@@ -756,11 +804,61 @@ export default class MainScene extends Phaser.Scene {
               if(context.dir_msg != null){    //destroy the message
                 context.dir_msg.destroy();
               }
-              context.player.setScale(3,3)   //change player size
+              context.player.setScale(3.5,3.5)   //change player size
               context.pause = false;        //unpause game
           }
           else{
             context.dir_msg.text = 'Please enter the following exactly as written: \'shark.setSize(2)\'';
+              }
+        }
+      });
+    }
+
+    changeSharkSizeMax(){
+      let context = this;
+      this.pause = true;
+
+      if(this.dir_msg != null){
+      this.dir_msg.destroy();
+      }
+
+      if(this.inputElement != null){
+        this.inputElement.removeElement;
+      }
+
+
+      this.inputElement = this.add.dom(this.mainCam.scrollX+this.width/2, 
+      this.mainCam.scrollY+this.height/4+50).createFromCache('maxsizeform');
+
+      this.inputElement.addListener('click');
+
+
+      this.inputElement.on('click', function (event) {
+
+      if (event.target.name === 'methodButton')
+      {
+          let inputText = <HTMLInputElement>context.inputElement.getChildByName('inputField');
+
+          //  Have they entered anything?
+          if (inputText.value == 'shark.setSize(3)')
+          {
+              //  Turn off the click events
+              context.inputElement.removeListener('click');
+
+              //  Hide the login element
+              context.inputElement.setVisible(false);
+
+              //  Populate the text with whatever they typed in
+              //context.dir_msg.setText("The shark will now change apparence (in future version)");
+
+              if(context.dir_msg != null){    //destroy the message
+                context.dir_msg.destroy();
+              }
+              context.player.setScale(6,6)   //change player size
+              context.pause = false;        //unpause game
+          }
+          else{
+            context.dir_msg.text = 'Please enter the following exactly as written: \'shark.setSize(3)\'';
               }
         }
       });
@@ -778,9 +876,6 @@ export default class MainScene extends Phaser.Scene {
       if(this.inputElement != null){
         this.inputElement.removeElement;
       }
-
-      this.dir_msg = this.add.text(this.mainCam.scrollX+this.width/2 - 175, this.mainCam.scrollY+this.height/10, 
-        'Enter \'shark.setColor(white)\'', { color: 'white', fontSize: '20px '});
 
       this.inputElement = this.add.dom(this.mainCam.scrollX+this.width/2, 
       this.mainCam.scrollY+this.height/4+50).createFromCache('colorform');
@@ -842,8 +937,6 @@ export default class MainScene extends Phaser.Scene {
         this.inputElement.removeElement;
       }
 
-      this.dir_msg = this.add.text(this.mainCam.scrollX+this.width/2 - 175, this.mainCam.scrollY+this.height/10, 
-        'Enter \'shark.setSpeed(2)\'', { color: 'white', fontSize: '20px '});
 
       this.inputElement = this.add.dom(this.mainCam.scrollX+this.width/2, 
       this.mainCam.scrollY+this.height/4+50).createFromCache('speedform');
@@ -879,9 +972,16 @@ export default class MainScene extends Phaser.Scene {
               }
         }
       });
+      
     }
 
-  
+
+    passedNextFive(score){
+      if(this.lastFive + 5 >= score){
+        return true;
+      }
+      return false;
+    }
 
 }
 
