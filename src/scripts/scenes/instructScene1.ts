@@ -42,7 +42,7 @@ export default class InstructScene1 extends Phaser.Scene {
         this.background.setOrigin(0, 0);
         this.background.setScrollFactor(1);
 
-        this.add.text(this.bg_width/2, 600, 
+        this.add.text(this.bg_width/2 - 250, 600, 
             'Use arrow keys to move around!', 
             {fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif', 
             fontSize: '40px' 
