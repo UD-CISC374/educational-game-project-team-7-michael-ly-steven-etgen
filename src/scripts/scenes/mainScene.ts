@@ -257,7 +257,6 @@ export default class MainScene extends Phaser.Scene {
 
   
     update() {
-console.log("here1");
       if(this.score >= 5 && this.score < 10 && this.color_box_made == false && !this.megDead) {
         this.changeSharkColor();
           this.nextUpgrade = "setSpeed";
