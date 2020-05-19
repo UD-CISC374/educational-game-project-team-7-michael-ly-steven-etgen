@@ -24,7 +24,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/educational-game-project-team-7-michael-ly-steven-etgen/finalassets/icons/.DS_Store"
   },
   {
-    "revision": "53cefca2a0f75654486b180949686165",
+    "revision": "da1871e43c19b707421800a63b5b677a",
     "url": "/educational-game-project-team-7-michael-ly-steven-etgen/finalassets/icons/favicon.ico"
   },
   {
@@ -32,11 +32,11 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/educational-game-project-team-7-michael-ly-steven-etgen/finalassets/icons/icons-16.png"
   },
   {
-    "revision": "feee71db2bb3ba5d11b26658baf97783",
+    "revision": "6bb4e05b6212b104e15b2e15e3d35f9c",
     "url": "/educational-game-project-team-7-michael-ly-steven-etgen/finalassets/icons/icons-192.png"
   },
   {
-    "revision": "cb71713be71d0b8820c7ea6af9c5ddc6",
+    "revision": "d50cce59ac409833de490153beb4c657",
     "url": "/educational-game-project-team-7-michael-ly-steven-etgen/finalassets/icons/icons-512.png"
   },
   {
@@ -78,6 +78,14 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "1cdca402420712b4f35917cad50e43a3",
     "url": "/educational-game-project-team-7-michael-ly-steven-etgen/finalassets/images/splash.png"
+  },
+  {
+    "revision": "9f847ac4ccd2c939cc0dbde05c828989",
+    "url": "/educational-game-project-team-7-michael-ly-steven-etgen/finalassets/screenshots/large.png"
+  },
+  {
+    "revision": "9a74dfd3deec6250321f1c4ccd865b18",
+    "url": "/educational-game-project-team-7-michael-ly-steven-etgen/finalassets/screenshots/small.png"
   },
   {
     "revision": "fb198af7a77f4338ab91b57493ddcb84",
@@ -168,7 +176,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/educational-game-project-team-7-michael-ly-steven-etgen/finalassets/text/speedform.html"
   },
   {
-    "revision": "53cefca2a0f75654486b180949686165",
+    "revision": "da1871e43c19b707421800a63b5b677a",
     "url": "/educational-game-project-team-7-michael-ly-steven-etgen/finalfavicon.ico"
   },
   {
