@@ -46,13 +46,13 @@ export default class InstructScene3 extends Phaser.Scene {
         this.background.setOrigin(0, 0);
         this.background.setScrollFactor(1);
 
-        this.add.text(this.bg_width/2-400, 1300, 
-            'After you gain enough points, you will be prompted with \nan input box as shown above! You can call methods to \nchange attributes of the shark. This will allow you to \npractice calling methods. \n*Note: color is just for the looks of the shark, you can \neven change the size and speed of the shark later on.', 
+        this.add.text(this.bg_width/2-500, 1200, 
+            'After you gain enough points, you will be prompted with \nan input box as shown above! You can call methods to \nchange attributes and customize your shark. This will allow you to \npractice calling methods. \n\n*Note: color is simple to personalize the looks of the shark. You can also \nchange the size and speed of the shark.\nWin the game by becoming the apex predator of the ocean!', 
             {fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif', 
             fontSize: '40px' 
         });
 
-        this.nextButton = this.add.sprite(this.bg_width/2, 1700, "next").setInteractive();
+        this.nextButton = this.add.sprite(this.bg_width/2, 1650, "next").setInteractive();
         this.nextButton.on('pointerdown', () => {
             this.scene.start("PreloadScene");
         });

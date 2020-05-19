@@ -22,6 +22,8 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.html("sizeform", "./assets/text/sizeform.html")
     this.load.html("speedform", "./assets/text/speedform.html")
     this.load.html("maxsizeform", "./assets/text/maxsizeform.html")
+    this.load.html("endform", "./assets/text/endform.html")
+    this.load.html("hintform", "./assets/text/hintform.html")
 
     
     //load the spritesheet

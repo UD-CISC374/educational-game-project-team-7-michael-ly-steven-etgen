@@ -68,6 +68,10 @@ export default class MainScene extends Phaser.Scene {
   neededScoreLabel: Phaser.GameObjects.BitmapText;
   second_size_box_made: boolean;
   lastFive: number;
+  megDead: boolean;
+  make_hint_box: boolean;
+  win_prompt_done: boolean;
+  inside_win_prompt: boolean;
 
     constructor() {
       super({ key: 'MainScene' });
@@ -76,8 +80,6 @@ export default class MainScene extends Phaser.Scene {
       this.bg_width = BG_WIDTH;
       this.bg_height = BG_HEIGHT;
       this.bg_surface_height = BG_HEIGHT-1850;
-      this.pl_model_key = "_gr"
-      this.pause = false;
       this.fish1_sp = 2;
       this.fish1_dir = "right";
       this.fish1_old_dir = "right";
@@ -99,17 +101,24 @@ export default class MainScene extends Phaser.Scene {
       this.megalodon_sp = 5;
       this.megalodon_dir = "right";
       this.megalodon_old_dir = "right";
-      this.score = 0;
-      this.color_box_made = false;
-      this.size_box_made = false;
-      this.second_size_box_made = false;
-      this.speed_box_made = false;
-      this.player_speed = gameSettings.playerSpeed;
-      this.lastFive = 0;
+      
+
     }
 
     create() {
 
+      this.score = 0;
+      this.pause = false;
+      this.color_box_made = false;
+      this.size_box_made = false;
+      this.second_size_box_made = false;
+      this.speed_box_made = false;
+      this.make_hint_box = false;
+      this.win_prompt_done = false;
+      this.inside_win_prompt = false;
+      this.pl_model_key = "_gr";
+      this.player_speed = gameSettings.playerSpeed;
+      this.megDead = false;
       this.ingame_track = this.sound.add("ingame");
       this.ingame_track.play();
 
@@ -178,7 +187,7 @@ export default class MainScene extends Phaser.Scene {
       this.fish6.setInteractive();
       this.fish6.setScale(3.5,3.5);
 
-      this.megalodon = this.physics.add.sprite(this.bg_width/2, this.bg_height-1000, "megalodon");
+      this.megalodon = this.physics.add.sprite(this.bg_width-750, this.bg_height-1000, "megalodon");
       this.megalodon.play("megalodon_right");
       this.megalodon.setScale(3.5,3.5);
 
@@ -200,7 +209,7 @@ export default class MainScene extends Phaser.Scene {
 */
       this.physics.add.overlap(this.player, this.powerUps, this.pickPowerUp, undefined, this);
       this.physics.add.overlap(this.player, this.fish, this.checkPlayerBigger, undefined, this);
-      this.physics.add.overlap(this.player, this.megalodon, this.checkPlayerBigger, undefined, this);
+      this.physics.add.overlap(this.player, this.megalodon, this.checkPlayerBiggerMeg, undefined, this);
 
       // var graphics = this.add.graphics();
       // graphics.fillStyle(0x000000, 1);
@@ -243,58 +252,62 @@ export default class MainScene extends Phaser.Scene {
       }
 
       //this.music.play(musicConfig);
-
+      // this.getWinPrompt();
     }
 
   
     update() {
-
-      if(this.score >= 5 && this.score < 10 && this.color_box_made == false) {
+console.log("here1");
+      if(this.score >= 5 && this.score < 10 && this.color_box_made == false && !this.megDead) {
         this.changeSharkColor();
           this.nextUpgrade = "setSpeed";
           this.neededScore = this.neededScore + 5;
           this.color_box_made = true;
       }
-      else if(this.score >= 10 && this.score < 15 && this.speed_box_made == false) {
+      else if(this.score >= 10 && this.score < 15 && this.speed_box_made == false && !this.megDead) {
         this.changeSharkSpeed();
         this.nextUpgrade = "setSize";
         this.neededScore = this.neededScore + 5;
         this.speed_box_made = true;
       }
-      else if(this.score >= 15 && this.score < 20 && this.size_box_made == false) {
+      else if(this.score >= 15 && this.score < 20 && this.size_box_made == false && !this.megDead) {
         this.changeSharkSize();
         this.nextUpgrade = "setColor";
         this.neededScore = this.neededScore + 5;
         this.size_box_made = true;
         this.color_box_made = false;
       }
-      else if(this.score >= 20 && this.score < 25 && this.color_box_made == false) {
+      else if(this.score >= 20 && this.score < 25 && this.color_box_made == false && !this.megDead) {
         this.changeSharkColor();
         this.nextUpgrade = "setSize";
         this.neededScore = this.neededScore + 5;
         this.color_box_made = true;
         }
-      else if(this.score >= 25 && this.score < 30 && this.second_size_box_made == false) {
+      else if(this.score >= 25 && this.score < 30 && this.second_size_box_made == false && !this.megDead) {
         this.changeSharkSizeMax();
         this.nextUpgrade = "setColor";
         this.neededScore = this.neededScore + 5;
         this.second_size_box_made = true;
         this.color_box_made = false;
+
       }
-      // else if(this.score >= 30 && this.score % 5 == 0 && this.color_box_made == false) {
-      //   this.changeSharkColor();
-      //   this.nextUpgrade = "setColor";
-      //   this.lastFive = 30;
-      //   this.neededScore = this.neededScore + 5;
-      //   this.color_box_made = true;
-      // }
-      // else if(this.score % 5 == 1 && this.score > 30){ //allow for a new color change when the points get to the next multiple of 5
-      //   this.color_box_made = false;
-      // }
+      else if(this.score >= 30 && this.score % 5 == 0 && this.color_box_made == false && this.inside_win_prompt == false) {
+        this.changeSharkColor();
+        this.nextUpgrade = "setColor";
+        this.lastFive = 30;
+        this.neededScore = this.neededScore + 5;
+        this.color_box_made = true;
+      }
+      else if(this.score % 5 == 1 && this.score > 30 && this.inside_win_prompt == false){ //allow for a new color change when the points get to the next multiple of 5
+        this.color_box_made = false;
+      }
 
 
 
-
+      if(this.make_hint_box){
+        this.getMegHint();
+        this.make_hint_box = false;
+      }
 
 
       if(!this.pause){
@@ -302,11 +315,8 @@ export default class MainScene extends Phaser.Scene {
         this.movePlayerManager();
 
         this.fishMover();
-        //this.MegalodonMover();
-      }
-      else{
-        this.player.setVelocity(0);
-      }
+
+        
 
       if (this.distanceBtwn(this.player, this.megalodon) < 400) { // If Megalodon is close to player, it chases after the player.
         if (!this.isSamePos(this.player, this.megalodon)) {
@@ -333,6 +343,10 @@ export default class MainScene extends Phaser.Scene {
       else {
         this.MegalodonMover();
       }
+    }
+    else{
+      this.player.setVelocity(0);
+    }
       
       if (this.distanceBtwn(this.player, this.fish1) < 400 && this.isPlayerBigger(this.player, this.fish1)) { 
         if (this.player.x < this.fish1.x) { 
@@ -399,6 +413,10 @@ export default class MainScene extends Phaser.Scene {
       this.neededScoreLabel.destroy();
       this.neededScoreLabel = this.add.bitmapText(this.mainCam.scrollX+this.width-450, this.mainCam.scrollY+50, "pixelFont", "Needed Score: " + this.neededScore , 50);
     
+      if(this.win_prompt_done){
+        this.inputElement.removeElement;
+        this.win_prompt_done = false;
+      }
     
     }
 
@@ -638,20 +656,23 @@ export default class MainScene extends Phaser.Scene {
     }
 
     moveMon(mon, speed):string {
-      let dir = "";
-      mon.x += speed;
-      if (mon.x > this.bg_width || mon.x < 0) {
-        var rand = Phaser.Math.Between(0, 1);
-        if(rand == 0){
-          this.resetMonPosRight(mon);
-          dir = "right"
+      if(!this.megDead){
+        let dir = "";
+        mon.x += speed;
+        if (mon.x > this.bg_width || mon.x < 0) {
+          var rand = Phaser.Math.Between(0, 1);
+          if(rand == 0){
+            this.resetMonPosRight(mon);
+            dir = "right"
+          }
+          else{
+            this.resetMonPosLeft(mon);
+            dir = "left";
+          }
         }
-        else{
-          this.resetMonPosLeft(mon);
-          dir = "left";
-        }
+        return dir;
       }
-      return dir;
+      return "right";
     }
 
     resetFishPosRight(fish) {
@@ -669,13 +690,13 @@ export default class MainScene extends Phaser.Scene {
     resetMonPosRight(mon) { // Reset positions for Sea monsters
       //var randomY = Phaser.Math.Between(2650, this.bg_height);
       mon.x = 0;
-      mon.y = this.bg_height - 1000;
+      mon.y = this.bg_height - 800;
     }
 
     resetMonPosLeft(mon) {
       //var randomY = Phaser.Math.Between(2650, this.bg_height);
       mon.x = this.bg_width;
-      mon.y = this.bg_height - 1000;
+      mon.y = this.bg_height - 800;
     }
 
     reverseSpeed(speed){
@@ -697,6 +718,28 @@ export default class MainScene extends Phaser.Scene {
         var scoreFormated = this.zeroPad(this.score, 2);
         this.scoreLabel.text = "SCORE " + scoreFormated;
         this.sound.play("bite");
+        return true;
+      }
+      else if(this.player.alpha < 1){
+        return false;
+      }
+      else{
+        this.resetPlayer();
+        return false;
+      }
+    }
+
+    checkPlayerBiggerMeg(player, fish) {     //checks if the player is bigger than the fish it collided with
+      const fish_rec = this.getArea(fish.getBounds());
+      const player_rec = this.getArea(player.getBounds());
+      if(player_rec > fish_rec){
+        this.megDead = true;
+        this.resetMonPosRight(fish);
+        this.sound.play("bite");
+        // this.score += 1;
+        // var scoreFormated = this.zeroPad(this.score, 2);
+        // this.scoreLabel.text = "SCORE " + scoreFormated;
+        this.getWinPrompt();
         return true;
       }
       else if(this.player.alpha < 1){
@@ -764,6 +807,78 @@ export default class MainScene extends Phaser.Scene {
       this.player.alpha = 1;
     }
 
+    getWinPrompt(){
+      let context = this;
+      this.pause = true;
+
+      if(this.dir_msg != null){
+      this.dir_msg.destroy();
+      }
+
+      if(this.inputElement != null){
+        this.inputElement.removeElement;
+      }
+
+      this.inside_win_prompt = true;
+
+      this.inputElement = this.add.dom(this.mainCam.scrollX+this.width/2, 
+      this.mainCam.scrollY+this.height/4+50).createFromCache('endform');
+
+      this.inputElement.addListener('click');
+
+
+      this.inputElement.on('click', function (event) {
+
+      if (event.target.name == 'continueButton'){
+        context.inputElement.removeListener('click');
+        //  Hides the element
+        context.inputElement.setVisible(false);
+        context.inputElement.removeElement;
+        context.win_prompt_done = true;
+        context.inside_win_prompt = false;
+        context.megDead = false;
+        context.pause = false;        //unpause game
+      }
+      else if(event.target.name == 'mainMenuButton'){
+        context.scene.start('PreloadScene');
+      }
+
+      });
+    }
+
+    getMegHint() {
+      let context = this;
+      this.pause = true;
+
+      if(this.dir_msg != null){
+      this.dir_msg.destroy();
+      }
+
+      if(this.inputElement != null){
+        this.inputElement.removeElement;
+      }
+
+
+      this.inputElement = this.add.dom(this.mainCam.scrollX+this.width/2, 
+      this.mainCam.scrollY+this.height/4+50).createFromCache('hintform');
+
+      this.inputElement.addListener('click');
+
+
+      this.inputElement.on('click', function (event) {
+
+      if (event.target.name === 'continueButton'){
+        context.inputElement.removeListener('click');
+        //  Hides the element
+        context.inputElement.setVisible(false);
+        context.inputElement.removeElement;
+        context.pause = false;        //unpause game
+      }
+
+      });
+    }
+    
+
     changeSharkSize(){
       let context = this;
       this.pause = true;
@@ -795,8 +910,9 @@ export default class MainScene extends Phaser.Scene {
               //  Turn off the click events
               context.inputElement.removeListener('click');
 
-              //  Hide the login element
+              //  Hide the element
               context.inputElement.setVisible(false);
+              context.inputElement.removeElement;
 
               //  Populate the text with whatever they typed in
               //context.dir_msg.setText("The shark will now change apparence (in future version)");
@@ -805,10 +921,12 @@ export default class MainScene extends Phaser.Scene {
                 context.dir_msg.destroy();
               }
               context.player.setScale(3.5,3.5)   //change player size
+              context.make_hint_box = true;
               context.pause = false;        //unpause game
           }
           else{
-            context.dir_msg.text = 'Please enter the following exactly as written: \'shark.setSize(2)\'';
+            context.dir_msg = context.add.text(context.mainCam.scrollX+context.width/2 - 300, context.mainCam.scrollY+context.height/10, 
+              'Please enter the following exactly as written: \'shark.setSize(2)\'', { color: 'white', fontSize: '20px '});
               }
         }
       });
@@ -845,8 +963,9 @@ export default class MainScene extends Phaser.Scene {
               //  Turn off the click events
               context.inputElement.removeListener('click');
 
-              //  Hide the login element
+              //  Hide the element
               context.inputElement.setVisible(false);
+              context.inputElement.removeElement;
 
               //  Populate the text with whatever they typed in
               //context.dir_msg.setText("The shark will now change apparence (in future version)");
@@ -858,7 +977,8 @@ export default class MainScene extends Phaser.Scene {
               context.pause = false;        //unpause game
           }
           else{
-            context.dir_msg.text = 'Please enter the following exactly as written: \'shark.setSize(3)\'';
+            context.dir_msg = context.add.text(context.mainCam.scrollX+context.width/2 - 300, context.mainCam.scrollY+context.height/10, 
+              'Please enter the following exactly as written: \'shark.setSize(3)\'', { color: 'white', fontSize: '20px '});
               }
         }
       });
@@ -895,8 +1015,9 @@ export default class MainScene extends Phaser.Scene {
           {
               //  Turn off the click events
               context.inputElement.removeListener('click');
-              //  Hide the login element
+              //  Hide the element
               context.inputElement.setVisible(false);
+              context.inputElement.removeElement;
               //  Populate the text with whatever they typed in
               //context.dir_msg.setText("The shark will now change apparence (in future version)");
               if (inputText.value == 'shark.setColor(gray)'){
@@ -919,7 +1040,8 @@ export default class MainScene extends Phaser.Scene {
               context.pause = false;        //unpause game
           }
           else{
-            context.dir_msg.text = 'Please enter the following in the form of: \'shark.setColor(white)\'';
+            context.dir_msg = context.add.text(context.mainCam.scrollX+context.width/2 - 300, context.mainCam.scrollY+context.height/10, 
+              'Please enter the following in the form of: \'shark.setColor(white)\'', { color: 'white', fontSize: '20px '});
               }
         }
       }); 
@@ -955,8 +1077,9 @@ export default class MainScene extends Phaser.Scene {
           {
               //  Turn off the click events
               context.inputElement.removeListener('click');
-              //  Hide the login element
+              //  Hide the element
               context.inputElement.setVisible(false);
+              context.inputElement.removeElement;
               //  Populate the text with whatever they typed in
               //context.dir_msg.setText("The shark will now change apparence (in future version)");
               context.player_speed = context.player_speed * 1.5;
@@ -968,20 +1091,14 @@ export default class MainScene extends Phaser.Scene {
               context.pause = false;        //unpause game
           }
           else{
-            context.dir_msg.text = 'Please enter the following exactly: \'shark.setSpeed(2)\'';
+            context.dir_msg = context.add.text(context.mainCam.scrollX+context.width/2 - 300, context.mainCam.scrollY+context.height/10, 
+              'Please enter the following exactly: \'shark.setSpeed(2)\'', { color: 'white', fontSize: '20px '});
               }
         }
       });
       
     }
 
-
-    passedNextFive(score){
-      if(this.lastFive + 5 >= score){
-        return true;
-      }
-      return false;
-    }
 
 }
 
