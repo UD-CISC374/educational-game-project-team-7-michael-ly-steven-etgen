@@ -8,5 +8,8 @@ Our game gives the players complete control over the evolution of their characte
 You can move the shark anywhere on the screen using the arrow keys on your keyboard, eat fish that are smaller than your shark and avoid fish that are bigger than it. Your total score should increase if you eat smaller fish and decrease if you eat bigger fish. If you gain enough points, upgrade your shark by calling methods. You can either make your shark faster or bigger. The end goal is to get enough points to beat the game. For more details, click "instructions" in the main menu as it will guide you through how to play the game.
 
 ## Screenshot
-![Gameplay](./assets/screenshots/large.png)
+![Gameplay](./src/assets/screenshots/large.png)
+
+## Gameplay Video
+https://youtu.be/4R6DmaeuIS8
 
